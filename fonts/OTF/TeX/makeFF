@@ -1797,8 +1797,8 @@ $map{msbm10} = {
   ],
 
   "Unified-Regular" => [
-    0x00 => 0xFE00,         # \lvertneqq
-    0x01 => 0xE00D,         # \gvertneqq
+    0x00 => 0xE00D,         # \lvertneqq
+    0x01 => 0xE00C,         # \gvertneqq
     0x02 => 0x2270,         # \nleq
     0x03 => 0x2271,         # \ngeq
     0x04 => 0x226E,         # \nless
