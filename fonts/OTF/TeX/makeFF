@@ -1966,6 +1966,16 @@ $map{cmss10} = {
   ],
 
   "Unified-Regular" => [
+    # stix-Mathematical sans-serif
+    [0,1] => 0xE17F,         # \Gamma, \Delta
+    2 => 0xE184,             # \Theta
+    3 => 0xE187,             # \Lambda
+    4 => 0xE18A,             # \Xi
+    5 => 0xE18C,             # \Pi
+    6 => 0xE18F,             # \Sigma
+    [7,8] => 0xE191,         # \Upsilon, \Phi
+    [9,0xA] => 0xE194,       # \Psi, \Omega
+
     [0x30,0x39] => 0x1D7E2, # 0-9
     [0x41,0x5A] => 0x1D5A0, # A-Z
     [0x61,0x7A] => 0x1D5BA, # a-z
@@ -2016,6 +2026,19 @@ $map{cmssi10} = {
   ],
 
   "Unified-Regular" => [
+    # stix-Mathematical sans-serif italic
+    [0,1] => 0xE1C1,         # \Gamma, \Delta
+    2 => 0xE1C6,             # \Theta
+    3 => 0xE1C9,             # \Lambda
+    4 => 0xE1CC,             # \Xi
+    5 => 0xE1CE,             # \Pi
+    6 => 0xE1D1,             # \Sigma
+    [7,8] => 0xE1D3,         # \Upsilon, \Phi
+    [9,0xA] => 0xE1D6,       # \Psi, \Omega
+
+    # stix-Mathematical sans-serif italic digits
+    [0x30,0x39] => 0xE1B4,   # 0-9
+
     [0x41,0x5A] => 0x1D608, # A-Z
     [0x61,0x7A] => 0x1D622, # a-z
   ],
