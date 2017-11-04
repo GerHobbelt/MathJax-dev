@@ -59,6 +59,9 @@ fonts: $(CUSTOM).pl
 pack: $(CUSTOM).pl
 	$(MAKE) -C packer all
 
+combine: $(CUSTOM).pl
+	$(MAKE) -C combiner all
+
 clean:
 	rm -f $(CUSTOM).pl
 	$(MAKE) -C fonts clean

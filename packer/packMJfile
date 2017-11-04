@@ -27,7 +27,7 @@ print "============================================\n";
 print "Compressing: $src\n";
 print "--------------------------------------------";
 # The sed command uncomments the 'MathJax.isPacked = true;' from MathJax.js
-system("cat '$src' | $SED \"s\/^.*\\/\\/ \\(MathJax.isPacked = true;\\).*$\/\\1\/\" | $JAVA -jar '$YUICOMPRESSOR' -v -o '$dst' --type js 2>&1 | $YUIFILTER");
+system("cat '$src' | $SED \"s\/^.*\\/\\/ \\(MathJax.isPacked = true;\\).*$\/\\1\/\" > '$dst'");
 
 open(MJX,"<", $dst);
 @lines = <MJX>;
