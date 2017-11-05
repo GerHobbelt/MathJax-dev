@@ -17,7 +17,7 @@ $WHICH='which';
 # STIX fonts (http://stixfonts.org/) are already contained in that directory.
 # MATHJAXDIR is the path of the MathJax installation to update.
 $FONTDIR='';
-$MATHJAXDIR='../../mathjax';
+$MATHJAXDIR='../../../../';
 
 ##### Font tools #####
 # Most of the tools below are standard and should be available from your package

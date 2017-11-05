@@ -2,7 +2,7 @@
   "name": "@gerhobbelt/mathjax-dev",
   "version": "1.0.1-1",
   "description": "development environment for MathJax",
-  "repository": "git@github.com:mathjax/MathJax-dev.git",
+  "repository": "git@github.com:GerHobbelt/MathJax-dev.git",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "pub": "npm publish --access public"
