@@ -1,7 +1,7 @@
 /*
  *  %%% NAME %%%
  *  
- *  Copyright (c) 2010-2013 The MathJax Consortium
+ *  Copyright (c) 2010-2017 The MathJax Consortium
  *
  *  Part of the MathJax library.
  *  See http://www.mathjax.org for details.
@@ -15,6 +15,4 @@
 MathJax.Ajax.Preloading(
 %%% FILES %%%
 );
-
-MathJax.Hub.Config({"v1.0-compatible":false});
 

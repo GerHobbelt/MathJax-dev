@@ -1,19 +1,15 @@
-jax/input/MathML/config.js
-jax/output/HTML-CSS/config.js
-jax/output/NativeMML/config.js
+jax/input/AsciiMath/config.js
+jax/output/SVG/config.js
 jax/output/PreviewHTML/config.js
-config/MMLorHTML.js
-extensions/mml2jax.js
+extensions/asciimath2jax.js
 extensions/MathEvents.js
 extensions/MathZoom.js
 extensions/MathMenu.js
 jax/element/mml/jax.js
 extensions/toMathML.js
-jax/input/MathML/jax.js
-jax/output/PreviewHTML/jax.js
+jax/input/AsciiMath/jax.js
 extensions/fast-preview.js
 extensions/AssistiveMML.js
 extensions/a11y/accessibility-menu.js
 
 extensions: ['[a11y]/accessibility-menu.js']
-

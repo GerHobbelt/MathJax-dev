@@ -27,7 +27,9 @@ while ($file = <>) {
   } else {
     @config = <>;
     chomp(@config);
+    @config = grep {!/^extensions:/} @config;
     while (scalar(@config) && $config[-1] !~ m/\S/) {pop(@config)}
+    $config[-1] =~ s/,$// if scalar(@config);
     last;
   }
 }
@@ -38,7 +40,8 @@ while ($file = <>) {
 
 foreach $file (@files) {
   if ($file =~ m!^jax/(.*)/config.js!) {push(@JAX,"\"$1\"")}
-  if ($file =~ m!^extensions/(.*)!) {push(@EXTENSIONS,"\"$1\"")}
+  if ($file =~ m!^extensions/a11y/(.*)!) {push(@EXTENSIONS,"\"[a11y]/$1\"")}
+  elsif ($file =~ m!^extensions/(.*)!) {push(@EXTENSIONS,"\"$1\"")}
   if ($file =~ m!^config/(.*)!) {push(@CONFIG,"\"$1\"")}
 }
 

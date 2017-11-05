@@ -1,11 +1,8 @@
-/* -*- Mode: Javascript; indent-tabs-mode:nil; js-indent-level: 2 -*- */
-/* vim: set ts=2 et sw=2 tw=80: */
-
 /*************************************************************
  *
  *  %%% NAME %%%
  *  
- *  Copyright (c) 2010-2013 The MathJax Consortium
+ *  Copyright (c) 2010-2017 The MathJax Consortium
  *
  *  Part of the MathJax library.
  *  See http://www.mathjax.org for details.
