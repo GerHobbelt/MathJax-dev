@@ -25,8 +25,8 @@ sub packDir {
       next if "$src/$file" eq "$SRC/fonts";
       next if "$src/$file" eq "$SRC/docs";
       next if "$src/$file" eq "$SRC/unpacked";
-      next if "$src/$file" eq "$SRC/extensions/a11y";
-      next if "$src/$file" eq "$SRC/extensions/TeX/mhchem3";
+      #next if "$src/$file" eq "$SRC/extensions/a11y";
+      #next if "$src/$file" eq "$SRC/extensions/TeX/mhchem3";
       if (! -e "$dst/$file") {mkdir "$dst/$file"}
       packDir("$src/$file","$dst/$file");
     } elsif ($file =~ m/\.js$/) {

@@ -37,6 +37,8 @@ help:
 	@echo "  Remove temporary directories and files."
 	@echo ""
 
+all: config pack combine
+
 $(CUSTOM):
 	@cp default.cfg $(CUSTOM);
 	@echo "Configuration file '$(CUSTOM)' created.";
@@ -53,17 +55,22 @@ $(CUSTOM).pl: $(CUSTOM)
 
 config: $(CUSTOM).pl
 
-fonts: $(CUSTOM).pl
+fonts: config
 	$(MAKE) -C fonts all
 
-pack: $(CUSTOM).pl
+pack: config
 	$(MAKE) -C packer all
 
-combine: $(CUSTOM).pl
+combine: config
 	$(MAKE) -C combiner all
 
-clean:
+clean: config
 	rm -f $(CUSTOM).pl
 	$(MAKE) -C fonts clean
 
-.PHONY: fonts
+clean-destination: config
+	# this assumes MATHJAXDIR is a *relative path* for the perl tools in combiner and packer:
+	-rm -rf $(MATHJAXDIR)/mathjax/config/ $(MATHJAXDIR)/mathjax/localization/ $(MATHJAXDIR)/mathjax/extensions/ $(MATHJAXDIR)/mathjax/jax/
+
+.PHONY: help fonts config pack combine clean clean-destination all
+

@@ -19,10 +19,17 @@
 
 include ../custom.cfg
 
-all: core imageFonts
+all: core imageFonts misc-assets
 
 core:
 	$(PERL) packMJ --force $(MATHJAXDIR)
 
 imageFonts:
 	$(PERL) packMJfonts $(MATHJAXDIR)
+
+misc-assets:
+	cp -f $(MATHJAXDIR)/unpacked/extensions/a11y/*.mp3 $(MATHJAXDIR)/extensions/a11y/
+	cp -f $(MATHJAXDIR)/unpacked/extensions/a11y/*.ogg $(MATHJAXDIR)/extensions/a11y/
+	cp -f $(MATHJAXDIR)/unpacked/jax/output/HTML-CSS/blank.gif $(MATHJAXDIR)/jax/output/HTML-CSS/
+
+.PHONY: all core imageFonts misc-assets
