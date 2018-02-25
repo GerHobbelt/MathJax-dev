@@ -25,9 +25,15 @@ sub packDir {
       next if "$src/$file" eq "$SRC/fonts";
       next if "$src/$file" eq "$SRC/docs";
 
+      next if "$src/$file" eq "$SRC/node_modules";
+
       next if "$src/$file" eq "$SRC/jax/output/EditableSVG/demo";
-      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/ts";
+      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/lib";
+      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/jax_js.js";
+      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/webpack.config.js";
+      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/tests";
       next if "$src/$file" eq "$SRC/jax/output/EditableSVG/node_modules";
+      next if (("$src" eq "$SRC/jax/output/EditableSVG/ts") && ("$file" ne "autoload"));
 
       next if "$src/$file" eq "$SRC/unpacked";
       next if "$src/$file" eq "$SRC/extensions/a11y";
