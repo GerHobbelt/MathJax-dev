@@ -2,7 +2,7 @@
 
 #  Compresses a MathJax file and reports the new size and savings.
 #  You need to have yuicompressor in order for this to work
-#  
+#
 #  Usage:  packMJfile src-file dest-file
 
 use Cwd;
@@ -23,11 +23,19 @@ if ($src =~ m!/config/(local/local|default)\.js$!) {
   exit;
 }
 
+# This one is minified by webpack
+if ($src =~ m!/jax/output/EditableSVG/jax\.js$!) {
+  print "============================================\n";
+  print "Copying: $src\n";
+  system("cp '$src' '$dst'");
+  exit;
+}
+
 print "============================================\n";
 print "Compressing: $src\n";
 print "--------------------------------------------";
 # The sed command uncomments the 'MathJax.isPacked = true;' from MathJax.js
-system("cat '$src' | $SED \"s\/^.*\\/\\/ \\(MathJax.isPacked = true;\\).*$\/\\1\/\" | $JAVA -jar '$YUICOMPRESSOR' -v -o '$dst' --type js 2>&1 | $YUIFILTER");
+if (system("cat '$src' | $SED \"s\/^.*\\/\\/ \\(MathJax.isPacked = true;\\).*$\/\\1\/\" | $JAVA -jar '$YUICOMPRESSOR' -v -o '$dst' --type js 2>&1") != 0) { die("Packer failed on file '$src'"); }
 
 open(MJX,"<", $dst);
 @lines = <MJX>;
@@ -51,4 +59,3 @@ print MJX $lines;
 close(MJX);
 
 1;
-

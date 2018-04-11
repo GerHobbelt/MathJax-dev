@@ -52,7 +52,7 @@ sub packFile {
   my ($stime,$ssize) = (stat($src))[9,7];
   my $dtime = (stat($dst))[9];
   return if $stime <= $dtime && !$force;
-  system("$PACKMJFILE '$src' '$dst'");
+  if (system("$PACKMJFILE '$src' '$dst'") != 0) { die("Packer failed on file '$src'"); }
   my $dsize = (stat($dst))[7];
   print "Size: $dsize,  Original: $ssize [saved: ",$ssize-$dsize," or ",
     sprintf("%.1f",100*($ssize-$dsize)/$ssize),"%]\n";
