@@ -64,6 +64,14 @@ pack: config
 combine: config
 	$(MAKE) -C combiner all
 
+misc: operator-dictionary MML-entities
+
+MML-entities: config
+	cd MML-entities; bash ./makeAll ../$(MATHJAXDIR)/mathjax
+
+operator-dictionary: config
+	cd operator-dictionary; bash ./makeAll ../$(MATHJAXDIR)/mathjax
+
 clean: config
 	rm -f $(CUSTOM).pl
 	$(MAKE) -C fonts clean

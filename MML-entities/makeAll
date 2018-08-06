@@ -4,15 +4,23 @@
 #  plus the entities directory of less-common ones
 #  and installs them
 #  
-#  Usage:  ./makeAll
+#  Usage:  ./makeAll $(MATHJAXBASEDIR)
 
 rm -rf entities
-rm ../../MathJax/unpacked/jax/input/MathML/entities/*.js
+if test -d "$1/unpacked/jax/input/MathML/entities/" ; then
+	rm "$1/unpacked/jax/input/MathML/entities/"*.js
+else
+	echo "$0  $1: You MUST specify the MATHJAX base directory as an argument to this script!"
+fi
 ./makeEntities
-cp entities/*.js ../../MathJax/unpacked/jax/input/MathML/entities
+if test -d "$1/unpacked" ; then
+	cp entities/*.js "$1/unpacked/jax/input/MathML/entities"
+fi
 
 #
 #  This file contains the entity table to be added
 #  to jax/input/MathML/jax.js
 #
-open -a AlphaX data.js
+if test -x open; then
+	open -a AlphaX data.js
+fi

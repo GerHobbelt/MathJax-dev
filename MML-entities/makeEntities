@@ -68,7 +68,7 @@ foreach $name (sort(keys %range)) {
     print JSFILE " *\n";
     print JSFILE " *  MathJax/jax/output/HTML-CSS/entities/$name.js\n";
     print JSFILE " *\n";
-    print JSFILE " *  Copyright (c) 2010 Design Science, Inc.\n";
+    print JSFILE " *  Copyright (c) 2010-2018 The MathJax Consortium\n";
     print JSFILE " *\n";
     print JSFILE " *  Licensed under the Apache License, Version 2.0 (the \"License\");\n";
     print JSFILE " *  you may not use this file except in compliance with the License.\n";
