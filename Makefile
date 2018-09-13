@@ -33,6 +33,15 @@ help:
 	@echo "make pack"
 	@echo "  Run MathJax packer"
 	@echo ""
+	@echo "make combine"
+	@echo "  Run MathJax combiner, which combines the packed library source files"
+	@echo ""
+	@echo "make prettier"
+	@echo "  Run MathJax prettifier, which pretty-prints the combined library files"
+	@echo ""
+	@echo "make all"
+	@echo "  Regenerate the MathJax library files (pack, combine & prettify)"
+	@echo ""
 	@echo "make clean"
 	@echo "  Remove temporary directories and files."
 	@echo ""
@@ -64,6 +73,9 @@ pack: config
 combine: config
 	$(MAKE) -C combiner all
 
+prettier:
+	prettier --write --print-width 120 $(MATHJAXDIR)/mathjax/MathJax.js $(MATHJAXDIR)/mathjax/config/*.js
+	
 misc: operator-dictionary MML-entities
 
 MML-entities: config
@@ -80,5 +92,5 @@ clean-destination: config
 	# this assumes MATHJAXDIR is a *relative path* for the perl tools in combiner and packer:
 	-rm -rf $(MATHJAXDIR)/mathjax/config/ $(MATHJAXDIR)/mathjax/localization/ $(MATHJAXDIR)/mathjax/extensions/ $(MATHJAXDIR)/mathjax/jax/
 
-.PHONY: help fonts config pack combine clean clean-destination all
+.PHONY: help fonts config pack combine clean clean-destination prettier misc operator-dictionary MML-entities all
 
