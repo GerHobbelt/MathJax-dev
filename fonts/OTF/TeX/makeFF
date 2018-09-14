@@ -2229,6 +2229,7 @@ $map{cmtt10} = {
     0x17 => [0x2DA,-125,0], # ring above (modifier letter)
     0x20 => 0x2423,         # graphic representation of space
 
+    0x20 => 0x2423,         # visible space used in \verb*
     [0x21,0x7F] => 0x21,
 
     0x60 => 0x2018,         # left quote
