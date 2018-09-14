@@ -46,7 +46,7 @@ help:
 	@echo "  Remove temporary directories and files."
 	@echo ""
 
-all: config pack combine
+all: config pack combine prettier
 
 $(CUSTOM):
 	@cp default.cfg $(CUSTOM);
