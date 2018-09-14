@@ -43,5 +43,6 @@ $BASEENCODING='/usr/share/texmf-texlive/fonts/enc/dvips/base/';
 ##### packer #####
 $YUICOMPRESSOR='/usr/share/yui-compressor/yui-compressor.jar';
 
-$MFTRACE_PATH='';
+$MFTRACE_PATH='./Win32-bin/bin/mftrace.py';
+
 1;

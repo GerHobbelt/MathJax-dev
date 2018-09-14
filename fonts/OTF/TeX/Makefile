@@ -24,6 +24,7 @@ MFTRACE_MODIFIED=lib/mftrace-modified
 all: fonts install
 
 blacker: $(MFTRACE_MODIFIED)
+
 $(MFTRACE_MODIFIED):
 	$(PERL) makeBlacker 15 # values between 10 and 30 seem best
 
@@ -76,10 +77,10 @@ pfa: $(MFTRACE_MODIFIED)
 	@echo "eufb10"
 	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eufb10
 
-        #echo "eusm10"
-        #$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusm10
-        #echo "eusb10"
-        #$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusb10
+	#echo "eusm10"
+	#$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusm10
+	#echo "eusb10"
+	#$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusb10
 
 	@echo "rsfs10"
 	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify --encoding $(BASEENCODING)/tex256.enc rsfs10
@@ -97,7 +98,7 @@ ttf: ff
 	mkdir -p ttf
 	rm -f ttf/*
 
-        # Handle the MathJax_Size4 font first as it used by other fonts.
+	# Handle the MathJax_Size4 font first as it used by other fonts.
 	@echo "MathJax_Size4.ff"
 	$(FONTFORGE) -lang=ff -script ff/MathJax_Size4.ff
 
@@ -113,7 +114,7 @@ eot: ttf
 	@for file in `ls ttf/*.ttf | $(SED) 's|ttf/\(.*\)\.ttf|\1|'`; do \
 		echo "Generating $$file.eot..."; \
 		$(TTF2EOT) ttf/$$file.ttf > eot/$$file.eot; \
-		done
+	done
 
 	rm -f eot/*WinChrome* eot/*Greek*
 
@@ -125,7 +126,7 @@ svg: ttf
 		echo "Generating $$file.svg..."; \
 		$(JAVA) -jar $(TTF2SVG) ttf/$$file.ttf \
 		-id $$file -o svg/$$file.svg -l 0 -h 65535; \
-		done
+	done
 
 	rm -f svg/*WinIE6* svg/*Greek*
 
@@ -133,7 +134,7 @@ woff: otf ttf
 	@for file in `ls otf/*.otf | $(SED) 's|otf/\(.*\)\.otf|\1|'`; do \
 		echo "Generating $$file.woff..."; \
 		$(SFNT2WOFF) otf/$$file.otf; \
-		done
+	done
 
 	mkdir -p woff
 	rm -f woff/*
@@ -147,7 +148,7 @@ css: woff
 	@for file in `ls woff/*.woff | $(SED) 's|woff/\(.*\)\.woff|\1|'`; do \
 		echo "Generating $$file.css..."; \
 		$(PERL) woff2css $$file > css/$$file.css; \
-		end
+	end
 
 	$(PERL) css2all css/*.css > MathJax-All.css
 	mv MathJax-All.css css
@@ -157,24 +158,26 @@ OTFandTTF: ttf
 fonts: OTFandTTF eot svg woff # css
 
 install:
-        #Copy the font files into the system font directory
-        #rm -f $FONTDIR/MathJax_*
+	#Copy the font files into the system font directory
+	#rm -f $FONTDIR/MathJax_*
 	cp `ls otf/*.otf | $(GREP) -v 'Greek'` $(FONTDIR)
-        # echo `ls ttf/*.ttf | $(GREP) -Ev 'WinChro|WinIE6'`
+	# echo `ls ttf/*.ttf | $(GREP) -Ev 'WinChro|WinIE6'`
 	cp ttf/*Greek*.ttf $(FONTDIR)
 
-        #  Put the fonts into the MathJax fonts folder
+	#  Put the fonts into the MathJax fonts folder
 	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/otf/*.*
 	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/eot/*.*
 	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/svg/*.*
 	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/woff/*.*
-        #rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css/*.*
+	#rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css/*.*
 	cp `ls otf/*.otf | $(GREP) -v 'Greek'` $(MATHJAXDIR)/fonts/HTML-CSS/TeX/otf
 	cp eot/*.eot $(MATHJAXDIR)/fonts/HTML-CSS/TeX/eot
 	cp svg/*.svg $(MATHJAXDIR)/fonts/HTML-CSS/TeX/svg
 	cp woff/*.woff $(MATHJAXDIR)/fonts/HTML-CSS/TeX/woff
-        #cp css/*.css $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css
+	#cp css/*.css $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css
 
 clean:
 	rm -f $(MFTRACE_MODIFIED) lib/blacker.mf
 	rm -rf pfa ff otf ttf eot svg woff css
+
+.PHONY: all fonts install blacker clean css woff eot ttf ff pfa OTFandTTF svg otf $(MFTRACE_MODIFIED)

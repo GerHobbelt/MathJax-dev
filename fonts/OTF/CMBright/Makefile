@@ -185,3 +185,6 @@ clean:
 	rm -f $(MFTRACE_MODIFIED) lib/blacker.mf
 	rm -f skew.js
 	rm -rf pfa ff otf ttf eot svg woff css
+
+.PHONY: all fonts install blacker clean css woff eot ttf ff pfa OTFandTTF svg install otf
+

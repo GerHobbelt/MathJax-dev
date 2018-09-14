@@ -48,7 +48,7 @@ help:
 
 all: config pack combine prettier
 
-$(CUSTOM):
+$(CUSTOM): default.cfg
 	@cp default.cfg $(CUSTOM);
 	@echo "Configuration file '$(CUSTOM)' created.";
 	@echo "Edit this file and run 'make config'.";
@@ -92,5 +92,5 @@ clean-destination: config
 	# this assumes MATHJAXDIR is a *relative path* for the perl tools in combiner and packer:
 	-rm -rf $(MATHJAXDIR)/mathjax/config/ $(MATHJAXDIR)/mathjax/localization/ $(MATHJAXDIR)/mathjax/extensions/ $(MATHJAXDIR)/mathjax/jax/
 
-.PHONY: help fonts config pack combine clean clean-destination prettier misc operator-dictionary MML-entities all
+.PHONY: help fonts pack combine clean clean-destination prettier misc operator-dictionary MML-entities all
 
