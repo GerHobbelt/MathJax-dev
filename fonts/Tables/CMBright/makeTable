@@ -1,0 +1,432 @@
+#! /usr/bin/perl
+
+#  Makes a collection of font sample pages for the MathJax fonts
+#
+#  Usage:  ./makeTable
+
+require "config.pl";
+
+@fonts = (
+  $fontname.'_Main',
+  $fontname.'_Main-Bold',
+  $fontname.'_Main-Italic',
+  $fontname.'_Math-Italic',
+  $fontname.'_Math-Bold-Italic',
+  $fontname.'_Size1',
+  $fontname.'_Size2',
+  $fontname.'_Size3',
+  $fontname.'_Size4',
+  $fontname.'_AMS',
+  $fontname.'_Caligraphic',
+  $fontname.'_Caligraphic-Bold',
+  $fontname.'_Fraktur',
+  $fontname.'_Fraktur-Bold',
+  $fontname.'_SansSerif',
+  $fontname.'_SansSerif-Bold',
+  $fontname.'_SansSerif-Italic',
+  $fontname.'_Script',
+  $fontname.'_Typewriter',
+  $fontname.'_Greek',
+  $fontname.'_Greek-Bold',
+  $fontname.'_Greek-Italic',
+  $fontname.'_Greek-Bold-Italic',
+  $fontname.'_WinChrome',
+  $fontname.'_WinIE6',
+);
+
+sub byName {
+  my ($A,$B) = ($a,$b);
+  $A =~ s/Greek/V2_Greek/; $B =~ s/Greek/V2_Greek/;
+  $A =~ s/_(AMS|Caligraphic|Fraktur|Script|SansSerif|Typewriter)/_V1_\1/;
+  $B =~ s/_(AMS|Caligraphic|Fraktur|Script|SansSerif|Typewriter)/_V1_\1/;
+  $A =~ s/-Bold-/-XBold-/; $B =~ s/-Bold-/-XBold-/;
+  return $A cmp $B;
+}
+
+require "unicode.pl";
+
+sub GetTableData {
+  foreach $font (split(/\n/,`find -L ../../AFM/$fontname/fonts -name "*.js"`)) {GetFileData($font)}
+  CountRangeEntries();
+}
+
+sub GetFileData {
+  my $file = shift;
+  open(INFILE,$file);
+  my @lines = <INFILE>;
+  close(INFILE);
+  chomp(@lines);
+  FindChars(@lines);
+}
+
+sub FindChars {
+  my $font = ""; my $char;
+  foreach my $line (@_) {
+    if ($line =~ m/FONTDATA.FONTS\['([^']*)'\]/) {
+      $font = $1; $font =~ s/bold/Bold/; $font =~ s/italic/Italic/;
+    } elsif ($font ne $fontname."_Math" && $line =~ m/^ +0x([A-F0-9]*):/) {
+      $char = sprintf("%05X",hex($1));
+      $CHAR{$char}{$font} = 1;
+    }
+  }
+}
+
+sub CountRangeEntries {
+  foreach my $range (@ranges) {
+    my ($name,$start,$end) = @{$range};
+    my $N = 0;
+    foreach my $font (@fonts) {
+      my $n = 0;
+      foreach $c ($start..$end) {
+	my $C = sprintf("%05X",$c);
+	$n++ if $CHAR{$C} && $CHAR{$C}{$font};
+      }
+      $N += $n unless $font =~ m/Greek|_Win/;
+      $count{$font} += $n;
+      $frcount{$font}{$name} = $n;
+      $frcount{$font}{$fontname.'_All'} += $n unless $font =~ m/Greek|_Win/;
+    }
+    $count{$fontname.'_All'} += $N;
+    $frcount{$fontname.'_All'}{$name} = $N;
+  }
+}
+
+sub MakeCSS {
+  if (!-e "$fontname/css") {mkdir "$fontname/css" || die "Can't create '$fontname/css': $!\n"}
+  open(CSS,">","$fontname/css/mathjax.css") || die "Can't create '$fontname/css/mathjax.js': $!\n";
+  print CSS join("\n",(
+    '.header {font-weight: bold; padding: 3px}',
+    '.space  {width: 2px}',
+    '.blank  {padding: 10px}',
+    '.label  {padding: 5px; font-family: monospace; text-align: right; font-size: 80%}',
+    '.NA     {padding: 10px; background: white; border: solid #F4F4F4 1px}',
+    '.other  {padding: 10px; background: #CCCCCC}',
+    '.hidden {visibility: hidden}',
+    '.MJAX   {padding: 10px; font-size: 133%; background: #F0F0F0}',
+    '.caption td {font-family: monospace; font-size: 80%; text-align: center}',
+    '.small  {font-size: 80%; vertical-align: .15em}',
+    '.tt     {font-family: monospace; margin: 0px -.125em}',
+    'a       {text-decoration: none}',
+    '.navigation {position: fixed; top:5px; right:0px; width:auto}',
+    '.combine {font-family: '.$fontname.'_Main}',
+    '@media print {.navigation {display: none}}',
+  ),"");
+  foreach $font (@fonts) {
+    my $FONT = $font;
+    $FONT .= "-Regular" unless $FONT =~ m/-/;
+    $FONT =~ s/Bold-Italic/BoldItalic/;
+    if ($font =~ m/Greek/) {$otf = "ttf"; $opentype = "truetype"}
+                      else {$otf = "otf"; $opentype = "opentype"}
+    print CSS join("\n",(
+      "",
+      "\@font-face {",
+      "  font-family: '${FONT}-web';",
+      "  src: url('eot/${FONT}.eot'); /* IE9 Compat Modes */",
+      "  src: url('eot/${FONT}.eot?iefix') format('eot'),",
+      "       url('woff/${FONT}.woff')  format('woff'),",
+      "       url('$otf/${FONT}.$otf')  format('$opentype'),",
+      "       url('svg/${FONT}.svg#${FONT}') format('svg');",
+      "}",
+      "",
+      ".${font} {font-family: ${FONT}-web}",
+    ),"");
+  }
+  close(CSS);
+}
+
+sub MakeHeader {
+  my $FONT = shift; my $range = (shift) || "";
+  @HEADER = (
+    '<!DOCTYPE html>',
+    '<html>',
+    '<head>',
+    '<meta http-equiv="X-UA-Compatible" content="IE=edge" />',
+    '<title>MathJax Font Table for '.($FONT || "All Fonts").$range.'</title>',
+    '<link href="../css/mathjax.css" type="text/css" rel="stylesheet" />',
+    '</head>',
+    '<body>',
+    '<br />',
+    '<center>',
+    '<h1>'.($FONT || "MathJax Font").' Character Tables</h1>',
+  );
+}
+
+@FOOTER = (
+  '</center>',
+  '</body>',
+  '</html>',
+);
+
+@TABLEstart = (
+  '<table border="0" cellspacing="2" cellpadding="0">',
+  '',
+  '<tr align="center"><td class="blank"></td><td class="space"></td><td class="header" colspan="17">',
+);
+@TABLEhead = (
+  '</tr>',
+  '',
+  '<tr class="caption">',
+  '<td class="blank"></td>',
+  '<td class="space"></td>',
+  '<td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td>',
+  '<td class="space"></td>',
+  '<td>8</td><td>9</td><td>A</td><td>B</td><td>C</td><td>D</td><td>E</td><td>F</td>',
+  '</tr>',
+);
+@TABLEfoot = (
+  '</table>',
+  '<p>'
+);
+
+@ROWstart = ('<tr align="center">');
+@ROWend   = ('</tr>');
+
+sub PrintTOC {
+  mkdir "$fontname" unless -d "$fontname";
+  open(HTML,">$fontname/index.html");
+  PrintHTML(
+    '<!DOCTYPE html>',
+    '<html>',
+    '<head>',
+    '<meta http-equiv="X-UA-Compatible" content="IE=edge" />',
+    '<title>MathJax Fonts Unicode Block Table of Contents</title>',
+    '<style type="text/css">',
+    '  .tlabel {background: #CCCCCC; text-align: center; font-size: 80%; padding:1px 2px}',
+    '  .llabel {text-align: right}',
+    '  .space  {width: 2px}',
+    '  .hspace {height: 2px}',
+    '  .blank  {}',
+    '  .count  {background: #F0F0F0; padding: 3px}',
+    '  .tcount {background: #E4E4E4; padding: 3px}',
+    '  .bold   {font-weight: bold}',
+    '  .italic {font-style: italic}',
+    '  A {text-decoration: none}',
+    '</style>',
+    '</head>',
+    '<body>',
+    '<center>',
+    '<table border="0" cellspacing="2" cellpadding="0">',
+    '<tr align="center"><td></td><td></td><td colspan="35">',
+    '<h1>MathJax Fonts Unicode Block<br />Table of Contents</h1>',
+    '</td></tr>',
+  );
+
+  my @names = ('Main','Math','Size<i>n</i>','AMS','Cal',"Frak","SS","Scr","Type",'Greek','Chr','IE6','All');
+  my @rows  = (1,1,1,1,1,1,1,1,1,1,1,1,2); my @columns = (3,2,4,1,2,2,3,1,1,4,1,1,1);
+  my $rows = scalar(@ranges) + 5;
+
+  print HTML "<tr>\n";
+  print HTML '<td class="blank" rowspan="3"></td>',"\n";
+  foreach my $i (0..$#names) {
+    print HTML '<td class="space" rowspan="',$rows,'"></td>',"\n" if $rows[$i];
+    print HTML '<td class="tlabel"',
+      ($rows[$i] > 1 ? ' rowspan="'.$rows[$i].'"' : ''),
+      ($columns[$i] > 1 ? ' colspan="'.$columns[$i].'"' : ''),
+	'>',$names[$i],'</td>',"\n";
+  }
+  print HTML "</tr>\n";
+
+  print HTML "<tr>\n";
+  foreach my $name ('','B','I', 'I','BI', '1','2','3','4', '', '','B', '','B', '','B','I',
+                    '', '', '','B','I','BI', '', '') {
+    print HTML '<td class="tlabel',
+                   ($name =~ m/B/ ? ' bold' : ''),
+                   ($name =~ m/I/ ? ' italic' : ''),'">',$name,'</td>',"\n";
+  }
+  print HTML "</tr>\n";
+
+  print HTML '<tr><td class="hspace"></td></tr>',"\n";
+
+  foreach my $range (@ranges) {
+    my ($name,$start,$end) = @{$range};
+    next unless $frcount{$fontname.'_All'}{$name};
+    my $file = sprintf("/%04X-%04X.html",$start,$end);
+    print HTML '<tr align="right">',"\n";
+    print HTML '<td class="llabel">',$name,'</td>',"\n";
+    foreach my $font (@fonts) {
+      print HTML '<td class="count">',
+	($frcount{$font}{$name} ? '<a href="'.substr($font,8).$file.'">'.$frcount{$font}{$name}.'</a>' : ''),
+	'</td>',"\n";
+    }
+    print HTML '<td class="tcount"><a href="All',$file,'">',$frcount{$fontname.'_All'}{$name},'</a></td>';
+    print HTML "</tr>\n";
+  }
+
+  print HTML '<tr><td class="hspace"></td></tr>',"\n";
+  print HTML '<tr align="RIGHT">',"\n";
+  print HTML '<td class="llabel">All</td>',"\n";
+  foreach my $font (@fonts,$fontname.'_All') {
+    print HTML '<td class="tcount"><a href="',substr($font,8),'/All.html">',$count{$font},'</a></td>',"\n"
+  }
+  print HTML "</tr>\n";
+
+  PrintHTML(@FOOTER);
+
+  close(HTML);
+}
+
+sub PrintFullTable {
+  my $i = shift; my $FONT = ($i ne '' ? $fonts[$i] : '');
+  my $dir = "$fontname/".(substr($FONT,8) || "All");
+  my $file = "$dir/All.html";
+  mkdir "$fontname" unless -d "$fontname";
+  mkdir $dir unless -d $dir;
+  open(HTML,">",$file);
+  MakeHeader($FONT);
+  PrintHTML(@HEADER);
+  foreach my $j (0..$#ranges) {PrintRange($i,$j)}
+  PrintNavigation($i,'');
+  PrintHTML(@FOOTER);
+  close(HTML);
+}
+
+sub PrintRangeTable {
+  my $i = shift; my $j = shift;
+  my $FONT = ($i ne '' ? $fonts[$i] : '');
+  my ($name,$start,$end) = @{$ranges[$j]};
+  return if $frcount{($i eq '' ? $fontname.'_All' : $FONT)}{$name} == 0;
+  my $chars = sprintf("%04X-%04X",$start,$end);
+  my $dir = "$fontname/".($FONT ? substr($FONT,8) : "All");
+  my $file = "$dir/$chars.html";
+  mkdir "$fontname" unless -d "$fontname";
+  mkdir $dir unless -d $dir;
+  open(HTML,">",$file);
+  MakeHeader($FONT," ($chars)");
+  PrintHTML(@HEADER);
+  PrintRange($i,$j);
+  PrintNavigation($i,$j);
+  PrintHTML(@FOOTER);
+  close(HTML);
+}
+
+sub PrintRange {
+  my $i = shift; my $j = shift;
+  my $FONT = ($i ne '' ? $fonts[$i] : '');
+  my ($name,$start,$end) = @{$ranges[$j]};
+  return if $frcount{($i eq '' ? $fontname.'_All' : $FONT)}{$name} == 0;
+  PrintHTML(@TABLEstart);
+  print HTML sprintf("%s: %04X - %04X",$name,$start,$end);
+  PrintHTML(@TABLEhead);
+  while ($start < $end && !defined($CHAR{sprintf("%05X",$start)})) {$start++}
+  while ($end > $start && !defined($CHAR{sprintf("%05X",$end)})) {$end--}
+  foreach my $row (int($start/0x10)..int($end/0x10))
+    {PrintRow($FONT,$row,(($name =~ m/Combining/i) ? 'a' : ''))}
+  PrintHTML(@TABLEfoot);
+}
+
+sub PrintRow {
+  my $FONT = shift; my $row = shift;
+  my $combine = shift; my $COMBINE = $combine;
+  $combine = '<span class="combine">'.$combine.'</span>' if $combine && $FONT =~ /Size|_AMS/;
+  my $r = sprintf("%03X",$row); $row *= 0x10;
+  PrintHTML(@ROWstart);
+  print HTML '<td class="label">'.$r.'</td><td class="space"></td>',"\n";
+  foreach my $i (0x00..0x0F) {
+    my $c = sprintf("%05X",$row+$i);
+    if (defined($CHAR{$c})) {
+      my $title = $CHARNAME{$c}." (".sprintf("0x%X",$row+$i).")";
+      if ($FONT) {
+        if ($CHAR{$c}{$FONT}) {
+          print HTML '<td class="MJAX '.$FONT.'" title="'.$title.'">'.$combine.'&#x'.$c.';'.$combine.'</td>'."\n";
+	} else {
+	  print HTML '<td class="other" title="'.$title.'">&nbsp;</td>'."\n";
+        }
+      } else {
+	print HTML '<td class="MJAX" valign="top">';
+	foreach my $font (sort byName (keys %{$CHAR{$c}})) {
+	  next if $font =~ m/Greek|_Win/; $combine = $COMBINE;
+	  $combine = '<span class="combine">'.$COMBINE.'</span>' if $COMBINE && $font =~ /Size|_AMS/;
+	  print HTML '<span class="'.$font.'" title="'.$title." ".$font.'">'.
+                         $combine.'&#x'.$c.';'.$combine.'</span><br />';
+	}
+	print HTML '</td>'."\n";
+      }
+    } else {
+      print HTML '<td class="NA">&nbsp;</td>'."\n";
+    }
+    print HTML '<td class="space"></td>'."\n" if $i == 7;
+  }
+  PrintHTML(@ROWend);
+}
+
+sub PrintNavigation {
+  my $i = shift; my $j = shift;
+  my $FONT = ($i ne '' ? $fonts[$i] : $fontname.'_All');
+  my ($name,$start,$end) = ($j ne '' ? @{$ranges[$j]} : ($fontname.'_All',0,0));
+  my ($pfont,$nfont,$prange,$nrange);
+  my ($pi,$ni,$pj,$nj);
+
+  if ($i ne "") {
+    ($pi,$ni) = ($i-1,$i+1); ($pfont,$nfont) = ($fonts[$pi],$fonts[$ni]);
+    while ($j && $ni <= $#fonts && $frcount{$nfont}{$name} == 0) {$nfont = $fonts[++$ni]}
+  } else {
+    $pi = $#fonts; $pfont = $fonts[$#fonts]; $ni = 0; $nfont = "";
+  }
+  while ($j && $pi >= 0 && $frcount{$pfont}{$name} == 0) {$pfont = $fonts[--$pi]}
+  $pfont = "" if $pi < 0; $nfont = $fontname."_All" if $ni > $#fonts;
+  $pfont = substr($pfont,8); $nfont = substr($nfont,8);
+  my $pfurl = "../".$pfont.($j ne '' ? sprintf("/%04X-%04X.html",$start,$end) : '/All.html');
+  my $nfurl = "../".$nfont.($j ne '' ? sprintf("/%04X-%04X.html",$start,$end) : '/All.html');
+
+  if ($j ne "") {
+    ($pj,$nj) = ($j-1,$j+1); ($prange,$nrange) = ($ranges[$pj],$ranges[$nj]);
+    while ($nj <= $#ranges && $frcount{$FONT}{$nrange->[0]} == 0) {$nrange = $ranges[++$nj]}
+  } else {
+    $pj = $#ranges; $prange = $ranges[$pj]; $nj = 0; $nrange = ['',0,0];
+  }
+  while ($pj >= 0 && $frcount{$FONT}{$prange->[0]} == 0) {$prange = $ranges[--$pj]}
+  $prange = ['',0,0] if $pj < 0; $nrange = ['All',0,0] if $nj > $#ranges;
+  my $prurl = sprintf("%04X-%04X.html",$prange->[1],$prange->[2]);
+  my $nrurl = ($nrange->[2] ? sprintf("%04X-%04X.html",$nrange->[1],$nrange->[2]) : "All.html");
+
+  PrintHTML(
+    '<div class="navigation">',
+    '<table border="0" cellspacing="0" cellpadding="0" style="width:25.75em">',
+    '<tr>',
+    '<td colspan="3" align="center">',
+    ($prange->[0] ?
+      ('<a class="small" href="'.$prurl.'">'.$prange->[0].'</a><br />'.
+       '<span class="tt">/</span><span class="tt">\</span>') : '..'),
+
+    '</td>', '</tr>', '<tr>',
+    '<td style="width:12em" align="right">',
+    ($pfont ?
+      ('<a class="small" href="'.$pfurl.'">'.$pfont.'</a>&nbsp;',
+       '<span class="tt">&lt;</span>') : ':'),
+    '</td>',
+    '<td style="width:1.75em" align="center"><a href="../index.html">O</a></td>',
+    '<td style="width:12em" align="left">',
+    ($nfont ?
+      ('<span class="tt">&gt;</span>&nbsp;',
+       '<a class="small" href="'.$nfurl.'">'.$nfont.'</a>') : ':'),
+    '</td>', '</tr>', '<tr>',
+    '<td colspan="3" align="center">',
+    ($nrange->[0] ?
+      ('<span class="tt">\</span><span class="tt">/</span><br />'.
+       '<a class="small" href="'.$nrurl.'">'.$nrange->[0].'</a>') :
+       '<span style="position:relative"><span style="position:relative; top:-.5em">..</span></span>'),
+    '</td>', '</tr>',
+    '</table>',
+    '</div>',
+  );
+}
+
+sub PrintHTML {
+  print HTML join("\n",@_),"\n";
+}
+
+sub PrintAllTables {
+  foreach my $font (0..$#fonts) {
+    foreach my $range (0..$#ranges) {PrintRangeTable($font,$range)}
+    PrintFullTable($font);
+  }
+  foreach my $range (0..$#ranges) {PrintRangeTable('',$range)}
+  PrintFullTable('');
+}
+
+GetTableData();
+PrintTOC();
+PrintAllTables();
+MakeCSS();
+
+1;

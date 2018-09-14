@@ -50,8 +50,10 @@ TeX:
         # $(PERL) makePNG ttf/MathJax_Greek-Regular.ttf
 
 	@echo "Compressing PNG images (this make take a while)..."
-	$(OPTIPNG) -q -o7 TeX/png/*/*/*/*.png
-	$(ADVPNG) -q -z4 TeX/png/*/*/*/*.png
+	#$(OPTIPNG) -q -o7 TeX/png/*/*/*/*.png
+	echo TeX/png/*/*/*/*.png | xargs $(OPTIPNG) -q -o7
+	#$(ADVPNG) -q -z4 TeX/png/*/*/*/*.png
+	echo TeX/png/*/*/*/*.png | xargs $(ADVPNG) -q -z4
 
 range: TeX
         #  Makes the data files needed by the HTML-CSS output jax

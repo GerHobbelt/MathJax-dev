@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>makeSkew</title>
+<script>
+var jsMath = {
+	Add: function(n, a) {
+		for(k in a) {
+			jsMath.TeX[k] = [];
+			for(i = 0; i < a[k].length; i++) {
+				var c = a[k][i];
+				var l = c[c.length - 1];
+				if(typeof l === 'object') {
+					jsMath.TeX[k][i] = l;
+				} else {
+					jsMath.TeX[k][i] = {};
+				}
+			}
+		}
+	},
+	TeX: {},
+	Setup: {
+		EncodeFont: function(a) {}
+	},
+	Font: {
+		Register: function(a) {}
+	}
+}
+</script>
+<script type="text/javascript" src="./def/cmssmi10.js"></script>
+<script type="text/javascript" src="./def/cmssmib10.js"></script>
+<script type="text/javascript" src="./def/cmsssy10.js"></script>
+<script type="text/javascript" src="./def/cmssbsy10.js"></script>
+<script type="text/javascript" src="./def/rsfs10.js"></script>
+<script type="text/javascript" src="./makeSkew.js"></script>
+</head>
+<body>
+</body>
+</html>

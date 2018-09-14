@@ -22,7 +22,8 @@ include ../../custom.cfg
 all: STIX-Web Asana-Math Gyre-Pagella Gyre-Termes Latin-Modern Neo-Euler
 
 clean:
-	rm -rf */otf */ttf */eot */svg */woff
+	rm -rf */otf */ttf */eot */woff
+	rm -f */svg/*.svg
 	rm -f */HTML-CSS/fontdata.js; rm -f */HTML-CSS/fontdata-extra.js
 	rm -rf */HTML-CSS/*/;
 	rm -f */SVG/fontdata.js; rm -f */SVG/fontdata-extra.js

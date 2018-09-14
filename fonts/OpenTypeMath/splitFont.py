@@ -84,7 +84,7 @@ subprocess.call("mkdir -p %s/ttf %s/otf %s/svg"  %
                 (FONTFAMILY, FONTFAMILY, FONTFAMILY),
                 shell=True)
 if not(args.skipMainFonts):
-    subprocess.call("rm -f %s/ttf/* %s/otf/* %s/svg/*" %
+    subprocess.call("rm -f %s/ttf/* %s/otf/* %s/svg/*.svg" %
                     (FONTFAMILY, FONTFAMILY, FONTFAMILY),
                     shell=True)
 
@@ -776,7 +776,7 @@ for i in range(0,len(fontList)):
         # No need for namespaces={'s': 'http://www.w3.org/2000/svg'},
         # as Font Forge does not attach any xmlns namespace to the <svg> root
         glyphNode = SVGdoc.\
-            xpath('/svg/defs/font/glyph[@glyph-name="%s"]' % glyph.glyphname)
+            xpath('/s:svg/s:defs/s:font/s:glyph[@glyph-name="%s"]' % glyph.glyphname, namespaces={'s': 'http://www.w3.org/2000/svg'})
         if len(glyphNode) == 0:
             print(glyph.glyphname)
             raise BaseException("Unable to find the glyph")

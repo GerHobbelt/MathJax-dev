@@ -158,7 +158,7 @@ SMALLOPFONTS = None
 
 DELIMITERS = {
     0x002D: {"alias": 0x0305, "dir": "H"}, # hyphen-minus
-    0x002F: {"alias": 0x2044, "dir": "H"}, # slash
+    0x002F: {"alias": 0x2044, "dir": "H", "redefine": True}, # slash
     0x003D: # equal sign
     {
         "dir": "H",
