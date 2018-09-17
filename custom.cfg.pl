@@ -25,7 +25,7 @@ $MATHJAXDIR='../../../../';
 # TTF2SVG should point to the absolute path of batik-ttf2svg.jar JAR file.
 # For TTF2EOT and SFNT2WOFF, see https://code.google.com/p/ttf2eot/ and
 # http://people.mozilla.org/~jkew/woff/ respectively.
-$FONTFORGE='/c/Program Files\ (x86)/FontForgeBuilds/bin/fontforge.exe';
+$FONTFORGE='fontforge';
 $MFTRACE='/c/W32TeX/bin/mftrace.exe';
 $SFNT2WOFF='/c/W32TeX/bin/sfnt2woff';
 $TTF2EOT='/c/W32TeX/bin/ttf2eot';
@@ -37,13 +37,12 @@ $OPTIPNG='optipng';
 $ADVPNG='advpng';
 
 ##### TeXLive Encoding
-$TETEXENCODING='/usr/share/texmf-texlive/fonts/enc/dvips/tetex/';
-$BASEENCODING='/usr/share/texmf-texlive/fonts/enc/dvips/base/';
+$TETEXENCODING='/c/W32TeX/share/texmf-dist/fonts/enc/dvips/tetex/';
+$BASEENCODING='/c/W32TeX/share/texmf-dist/fonts/enc/dvips/base/';
 
 ##### packer #####
 $YUICOMPRESSOR='/usr/share/yui-compressor/yui-compressor.jar';
 
 $MFTRACE_PATH='/c/W32TeX/bin/mftrace.py';
 
-$MFTRACE_PATH='';
 1;

@@ -23,3 +23,5 @@ all: core
 
 core:
 	$(PERL) combineMJ --force $(MATHJAXDIR)
+
+.PHONY: all core
