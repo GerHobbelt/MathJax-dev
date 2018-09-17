@@ -79,10 +79,10 @@ pfa: $(MFTRACE_MODIFIED)
 	@echo "eufb10"
 	$(MFTRACE_BIN) --magnification 1000 --simplify eufb10
 
-	echo "eusm10"
-	$(MFTRACE_BIN) --magnification 1000 --simplify eusm10
-	echo "eusb10"
-	$(MFTRACE_BIN) --magnification 1000 --simplify eusb10
+	# echo "eusm10"
+	# $(MFTRACE_BIN) --magnification 1000 --simplify eusm10
+	# echo "eusb10"
+	# $(MFTRACE_BIN) --magnification 1000 --simplify eusb10
 
 	@echo "rsfs10"
 	$(MFTRACE_BIN) --magnification 1000 --simplify --encoding $(BASEENCODING)/tex256.enc rsfs10
@@ -93,7 +93,7 @@ pfa: $(MFTRACE_MODIFIED)
 
 ff: pfa
 	mkdir -p ff otf
-	rm -f ff/* otf/*
+	rm -f otf/*
 	$(PERL)	makeFF
 
 ttf: ff
@@ -204,6 +204,6 @@ install:
 
 clean:
 	rm -f $(MFTRACE_MODIFIED) lib/blacker.mf
-	rm -rf pfa ff otf ttf eot svg woff css
+	rm -rf pfa otf ttf eot svg woff css
 
 .PHONY: all fonts install blacker clean css woff woff2 eot ttf ff pfa OTFandTTF svg otf $(MFTRACE_MODIFIED)

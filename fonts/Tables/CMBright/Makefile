@@ -37,3 +37,5 @@ $(FONTNAME):
 
 clean:
 	rm -rf $(FONTNAME)
+
+.PHONY: all $(FONTNAME) clean

@@ -18,6 +18,7 @@
 #
 
 include ../../../custom.cfg
+
 FONTNAME=CMBright
 
 all: afm fonts data install
@@ -52,3 +53,5 @@ install:
 
 clean:
 	rm -rf afm fonts data
+
+.PHONY: all afm fonts data install clean
