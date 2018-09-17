@@ -74,7 +74,7 @@ combine: config
 	$(MAKE) -C combiner all
 
 prettier:
-	prettier --write --print-width 120 $(MATHJAXDIR)/mathjax/MathJax.js $(MATHJAXDIR)/mathjax/config/*.js
+	node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/MathJax.js | xargs prettier --write --print-width 120
 	
 misc: operator-dictionary MML-entities
 
