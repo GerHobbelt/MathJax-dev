@@ -43,8 +43,8 @@ pfa: $(MFTRACE_MODIFIED)
 	@echo "cmex10"
 	$(MFTRACE_BIN) --magnification 1000 --keep cmex10
 	$(FONTFORGE) -lang=ff -script ff/cmex10_fix.ff 
-	rm -rf mftrace.dir
-	rm cmex10.afm
+	# rm -rf mftrace.dir
+	# rm cmex10.afm
 
 	@echo "cmbx10"
 	$(MFTRACE_BIN) --magnification 1000 --simplify cmbx10
@@ -205,5 +205,7 @@ install:
 clean:
 	rm -f $(MFTRACE_MODIFIED) lib/blacker.mf
 	rm -rf pfa otf ttf eot svg woff css
+	rm -rf mftrace.dir
+	rm -f ff/MathJax*.ff
 
 .PHONY: all fonts install blacker clean css woff woff2 eot ttf ff pfa OTFandTTF svg otf $(MFTRACE_MODIFIED)
