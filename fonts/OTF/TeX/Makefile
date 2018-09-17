@@ -20,6 +20,8 @@
 include ../../../custom.cfg
 
 MFTRACE_MODIFIED=lib/mftrace-modified
+#MFTRACE_BIN=$(MFTRACE_BIN)
+MFTRACE_BIN=$(MFTRACE)
 
 all: fonts install
 
@@ -30,60 +32,60 @@ $(MFTRACE_MODIFIED):
 
 pfa: $(MFTRACE_MODIFIED)
 	@echo "cmr10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmr10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmr10
 
 	@echo "cmmi10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/aae443f0.enc --simplify cmmi10
+	$(MFTRACE_BIN) --magnification 1000 --encoding $(TETEXENCODING)/aae443f0.enc --simplify cmmi10
 
 	@echo "cmsy10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/10037936.enc --simplify cmsy10
+	$(MFTRACE_BIN) --magnification 1000 --encoding $(TETEXENCODING)/10037936.enc --simplify cmsy10
 
 	@echo "cmex10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --keep cmex10
-	$(FONTFORGE) -lang=ff -c 'Open("mftrace.dir/cmex10.pfa.raw");SelectAll();AddExtrema();Simplify();AutoHint();Generate("cmex10.pfa");'
+	$(MFTRACE_BIN) --magnification 1000 --keep cmex10
+	$(FONTFORGE) -lang=ff -script ff/cmex10_fix.ff 
 	rm -rf mftrace.dir
 	rm cmex10.afm
 
 	@echo "cmbx10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmbx10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmbx10
 
 	@echo "cmti10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmti10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmti10
 
 	@echo "msam10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify --encoding $(TETEXENCODING)/10037936.enc msam10
+	$(MFTRACE_BIN) --magnification 1000 --simplify --encoding $(TETEXENCODING)/10037936.enc msam10
 
 	@echo "msbm10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 450 --simplify --encoding $(TETEXENCODING)/10037936.enc msbm10
+	$(MFTRACE_BIN) --magnification 450 --simplify --encoding $(TETEXENCODING)/10037936.enc msbm10
 
 	@echo "cmmib10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/aae443f0.enc --simplify cmmib10
+	$(MFTRACE_BIN) --magnification 1000 --encoding $(TETEXENCODING)/aae443f0.enc --simplify cmmib10
 
 	@echo "cmbsy10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/10037936.enc --simplify cmbsy10
+	$(MFTRACE_BIN) --magnification 1000 --encoding $(TETEXENCODING)/10037936.enc --simplify cmbsy10
 
 	@echo "cmtt10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmtt10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmtt10
 
 	@echo "cmss10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmss10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmss10
 	@echo "cmssi10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmssi10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmssi10
 	@echo "cmssbx10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmssbx10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmssbx10
 
 	@echo "eufm10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eufm10
+	$(MFTRACE_BIN) --magnification 1000 --simplify eufm10
 	@echo "eufb10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eufb10
+	$(MFTRACE_BIN) --magnification 1000 --simplify eufb10
 
-	#echo "eusm10"
-	#$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusm10
-	#echo "eusb10"
-	#$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusb10
+	echo "eusm10"
+	$(MFTRACE_BIN) --magnification 1000 --simplify eusm10
+	echo "eusb10"
+	$(MFTRACE_BIN) --magnification 1000 --simplify eusb10
 
 	@echo "rsfs10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify --encoding $(BASEENCODING)/tex256.enc rsfs10
+	$(MFTRACE_BIN) --magnification 1000 --simplify --encoding $(BASEENCODING)/tex256.enc rsfs10
 
 	mkdir -p pfa
 	rm -f pfa/*
@@ -98,7 +100,7 @@ ttf: ff
 	mkdir -p ttf
 	rm -f ttf/*
 
-	# Handle the MathJax_Size4 font first as it used by other fonts.
+	# Handle the MathJax_Size4 font first as it is used by other fonts.
 	@echo "MathJax_Size4.ff"
 	$(FONTFORGE) -lang=ff -script ff/MathJax_Size4.ff
 
@@ -106,14 +108,27 @@ ttf: ff
 		echo ""; \
 		echo $$file; \
 		$(FONTFORGE) -lang=ff -script ff/$$file; \
-		done
+	done
+
+	@for file in `ls ttf/*.ttf`; do \
+		echo "hinting $$file"; \
+		if echo "$$file" | $(GREP) -q -e "Greek" -e "Size[1-4]" -e "Typewriter" -e "Win"; then \
+			$(TTFAUTOHINT) --windows-compatibility --symbol $$file $$file.hinted; \
+		else \
+			$(TTFAUTOHINT) --windows-compatibility $$file $$file.hinted; \
+		fi; \
+		mv $$file.hinted $$file; \
+	done
+
+	./fix_os2_metrics.rb ttf/
+
 eot: ttf
 	mkdir -p eot
 	rm -f eot/*
 
 	@for file in `ls ttf/*.ttf | $(SED) 's|ttf/\(.*\)\.ttf|\1|'`; do \
 		echo "Generating $$file.eot..."; \
-		$(TTF2EOT) ttf/$$file.ttf > eot/$$file.eot; \
+		$(TTF2EOT) < ttf/$$file.ttf > eot/$$file.eot; \
 	done
 
 	rm -f eot/*WinChrome* eot/*Greek*
@@ -141,6 +156,17 @@ woff: otf ttf
 	mv otf/*.woff woff
 	rm -f woff/*WinChrom* woff/*WinIE6* woff/*Greek*
 
+woff2: woff
+	@for file in `ls ttf/*.ttf | $(SED) 's|ttf/\(.*\)\.ttf|\1|'`; do \
+		echo "Generating $$file.woff2..."; \
+		$(WOFF2) ttf/$$file.ttf; \
+		done
+
+	mkdir -p woff2
+	rm -f woff2/*
+	mv ttf/*.woff2 woff2
+	rm -f woff2/*WinChrom* woff2/*WinIE6* woff2/*Greek*
+
 css: woff
 	mkdir -p css
 	rm -f css/*
@@ -155,7 +181,7 @@ css: woff
 
 OTFandTTF: ttf
 
-fonts: OTFandTTF eot svg woff # css
+fonts: OTFandTTF eot svg woff css
 
 install:
 	#Copy the font files into the system font directory
@@ -180,4 +206,4 @@ clean:
 	rm -f $(MFTRACE_MODIFIED) lib/blacker.mf
 	rm -rf pfa ff otf ttf eot svg woff css
 
-.PHONY: all fonts install blacker clean css woff eot ttf ff pfa OTFandTTF svg otf $(MFTRACE_MODIFIED)
+.PHONY: all fonts install blacker clean css woff woff2 eot ttf ff pfa OTFandTTF svg otf $(MFTRACE_MODIFIED)

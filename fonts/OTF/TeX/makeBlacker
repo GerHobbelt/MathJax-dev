@@ -14,7 +14,7 @@ unless ($blacker) {
 }
 
 sub editMftrace {
-  my $oldMFTRACE = "../../../" . $MFTRACE_PATH;
+  my $oldMFTRACE = $MFTRACE_PATH;
   $MFTRACE = "./lib/mftrace-modified";
   print "Editing mftrace\n";
   open(MFT,$oldMFTRACE) || die "Can't read '$oldMFTRACE': $!\n";

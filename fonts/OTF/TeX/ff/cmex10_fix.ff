@@ -1,0 +1,6 @@
+Open("mftrace.dir/cmex10.pfa.raw");
+SelectAll();
+AddExtrema();
+Simplify();
+AutoHint();
+Generate("cmex10.pfa");
