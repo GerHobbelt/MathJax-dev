@@ -19,6 +19,9 @@
 
 include ../../custom.cfg
 
+#SPLITFONT=$(PYTHON) splitFont.py
+SPLITFONT=$(FFPYTHON) splitFont.py
+
 all: STIX-Web Asana-Math Gyre-Pagella Gyre-Termes Latin-Modern Neo-Euler
 
 clean:
@@ -33,27 +36,27 @@ clean:
 
 Asana-Math/HTML-CSS/fontdata.js:
 	# This also generates Asana-Math/eot Asana-Math/otf
-	$(PYTHON) splitFont.py Asana-Math $(FONTDIR)
+	$(SPLITFONT) Asana-Math $(FONTDIR)
 
 Gyre-Pagella/HTML-CSS/fontdata.js:
 	# This also generates Gyre-Pagella/eot Gyre-Pagella/otf
-	$(PYTHON) splitFont.py Gyre-Pagella $(FONTDIR)
+	$(SPLITFONT) Gyre-Pagella $(FONTDIR)
 
 Gyre-Termes/HTML-CSS/fontdata.js:
 	# This also generates Gyre-Termes/eot Gyre-Termes/otf
-	$(PYTHON) splitFont.py Gyre-Termes $(FONTDIR)
+	$(SPLITFONT) Gyre-Termes $(FONTDIR)
 
 Latin-Modern/HTML-CSS/fontdata.js:
 	# This also generates Latin-Modern/eot Latin-Modern/otf
-	$(PYTHON) splitFont.py Latin-Modern $(FONTDIR)
+	$(SPLITFONT) Latin-Modern $(FONTDIR)
 
 Neo-Euler/HTML-CSS/fontdata.js:
 	# This also generates Neo-Euler/eot Neo-Euler/otf
-	$(PYTHON) splitFont.py Neo-Euler $(FONTDIR)
+	$(SPLITFONT) Neo-Euler $(FONTDIR)
 
 STIX-Web/HTML-CSS/fontdata.js:
 	# This also generates STIX-Web/eot STIX-Web/otf
-	$(PYTHON) splitFont.py STIX-Web $(FONTDIR)
+	$(SPLITFONT) STIX-Web $(FONTDIR)
 
 fontdata: Asana-Math/HTML-CSS/fontdata.js Gyre-Pagella/HTML-CSS/fontdata.js Gyre-Termes/HTML-CSS/fontdata.js Latin-Modern/HTML-CSS/fontdata.js Neo-Euler/HTML-CSS/fontdata.js STIX-Web/HTML-CSS/fontdata.js
 
