@@ -63,3 +63,30 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+====================================================================
+
+# Required bundles / packages / tools
+
+For Windows:
+
+- W32TeX installed in /c/W32TeX/
+- mftrace
+- perl
+- python 2.7
+- Java Runtime (for batik-ttf2svg.jar : https://xmlgraphics.apache.org/batik/tools/font-converter.html)
+- batik (https://xmlgraphics.apache.org/batik/download.html)
+- fontforge
+- fonttools - installed via python's installer: `pip install fonttools'
+  as you'll need the TTX tool.
+  
+  See also: https://github.com/fonttools/fonttools  
+
+- fontforge and W32TeX binaries in your PATH environment variable = search path:
+
+  PATH=$PATH:/c/Python27:/c/Python27/Scripts:/c/W32TeX/bin:/c/Program Files (x86)/FontForgeBuilds/bin:/c/W32TeX/bin
+
+- to make splitFont.py work in OpenTypeMath:
+
+  + pip install lxml
+  + check out: https://stackoverflow.com/questions/23365299/how-to-import-fontforge-to-python-in-windows-7
+  
