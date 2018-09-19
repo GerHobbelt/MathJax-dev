@@ -63,6 +63,7 @@ var options = {
 	nodir: true,
 	ignore: [
 		"latest.js",
+		"config/default.js",
 		"**/config.js",
 		"node_modules/**",
 		"unpacked/**",
