@@ -20,7 +20,7 @@
 include ../../../custom.cfg
 
 MFTRACE_MODIFIED=lib/mftrace-modified
-#MFTRACE_BIN=$(MFTRACE_BIN)
+#MFTRACE_BIN=$(PYTHON) $(MFTRACE_MODIFIED)
 MFTRACE_BIN=$(MFTRACE)
 
 all: fonts install
@@ -191,11 +191,17 @@ install:
 	cp ttf/*Greek*.ttf $(FONTDIR)
 
 	#  Put the fonts into the MathJax fonts folder
-	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/otf/*.*
-	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/eot/*.*
-	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/svg/*.*
-	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/woff/*.*
-	#rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css/*.*
+	rm -rf $(MATHJAXDIR)/fonts/HTML-CSS/TeX/otf
+	rm -rf $(MATHJAXDIR)/fonts/HTML-CSS/TeX/eot
+	rm -rf $(MATHJAXDIR)/fonts/HTML-CSS/TeX/svg
+	rm -rf $(MATHJAXDIR)/fonts/HTML-CSS/TeX/woff
+	#rm -rf $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css
+	mkdir -p $(MATHJAXDIR)/fonts/HTML-CSS/TeX/otf
+	mkdir -p $(MATHJAXDIR)/fonts/HTML-CSS/TeX/eot
+	mkdir -p $(MATHJAXDIR)/fonts/HTML-CSS/TeX/svg
+	mkdir -p $(MATHJAXDIR)/fonts/HTML-CSS/TeX/woff
+	#mkdir -p $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css
+
 	cp `ls otf/*.otf | $(GREP) -v 'Greek'` $(MATHJAXDIR)/fonts/HTML-CSS/TeX/otf
 	cp eot/*.eot $(MATHJAXDIR)/fonts/HTML-CSS/TeX/eot
 	cp svg/*.svg $(MATHJAXDIR)/fonts/HTML-CSS/TeX/svg
