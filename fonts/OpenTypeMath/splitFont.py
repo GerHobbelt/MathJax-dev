@@ -27,7 +27,7 @@ import fontforge
 import fontUtil
 from fontSplitting import FONTSPLITTING
 
-from lxml import etree
+#from lxml import etree
 
 def boolToString(b):
     if b:
@@ -706,7 +706,7 @@ for i in range(0,len(fontList)):
                "", config.FONTDATA["Year"]), file=fontData[m])
 
     font = fontforge.open("%s/otf/%s.otf" % (FONTFAMILY, fileName))
-    SVGdoc = etree.parse("%s/svg/%s.svg" % (FONTFAMILY, fileName)).getroot()
+    #SVGdoc = etree.parse("%s/svg/%s.svg" % (FONTFAMILY, fileName)).getroot()
 
     if fontStyle == "Bold":
         fontName2 = fontName + "-bold"
@@ -775,19 +775,20 @@ for i in range(0,len(fontList)):
         # For SVG, we add the path description too.
         # No need for namespaces={'s': 'http://www.w3.org/2000/svg'},
         # as Font Forge does not attach any xmlns namespace to the <svg> root
-        glyphNode = SVGdoc.\
-            xpath('/s:svg/s:defs/s:font/s:glyph[@glyph-name="%s"]' % glyph.glyphname, namespaces={'s': 'http://www.w3.org/2000/svg'})
-        if len(glyphNode) == 0:
-            print(glyph.glyphname)
-            raise BaseException("Unable to find the glyph")
-        else:
-            glyphNode = glyphNode[0]
+        # glyphNode = SVGdoc.\
+        #     xpath('/s:svg/s:defs/s:font/s:glyph[@glyph-name="%s"]' % glyph.glyphname, namespaces={'s': 'http://www.w3.org/2000/svg'})
+        # if len(glyphNode) == 0:
+        #     print(glyph.glyphname)
+        #     raise BaseException("Unable to find the glyph")
+        # else:
+        #     glyphNode = glyphNode[0]
         
-        if "d" in glyphNode.attrib:
-            path = glyphNode.attrib["d"]
-            path = re.match(r"^M(.*)Z", path, flags=re.IGNORECASE).group(1)
-        else:
-            path = ""
+        # if "d" in glyphNode.attrib:
+        #     path = glyphNode.attrib["d"]
+        #     path = re.match(r"^M(.*)Z", path, flags=re.IGNORECASE).group(1)
+        # else:
+        #     path = ""
+        path = ""
         print(",'%s'" % path, file=fontData[1], end="")
 
         for m in MODES:

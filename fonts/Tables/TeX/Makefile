@@ -35,3 +35,5 @@ TeX:
 
 clean:
 	rm -rf TeX
+
+.PHONY: all TeX clean

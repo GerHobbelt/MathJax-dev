@@ -19,6 +19,9 @@
 
 include ../../custom.cfg
 
+#SPLITFONT=$(PYTHON) splitFont.py
+SPLITFONT=$(FFPYTHON) splitFont.py
+
 all: STIX-Web Asana-Math Gyre-Pagella Gyre-Termes Latin-Modern Neo-Euler
 
 clean:
@@ -32,28 +35,28 @@ clean:
 ###### Splitting the fonts ######
 
 Asana-Math/HTML-CSS/fontdata.js:
-# This also generates Asana-Math/eot Asana-Math/otf
-	$(PYTHON) splitFont.py Asana-Math $(FONTDIR)
+	# This also generates Asana-Math/eot Asana-Math/otf
+	$(SPLITFONT) Asana-Math $(FONTDIR)
 
 Gyre-Pagella/HTML-CSS/fontdata.js:
-# This also generates Gyre-Pagella/eot Gyre-Pagella/otf
-	$(PYTHON) splitFont.py Gyre-Pagella $(FONTDIR)
+	# This also generates Gyre-Pagella/eot Gyre-Pagella/otf
+	$(SPLITFONT) Gyre-Pagella $(FONTDIR)
 
 Gyre-Termes/HTML-CSS/fontdata.js:
-# This also generates Gyre-Termes/eot Gyre-Termes/otf
-	$(PYTHON) splitFont.py Gyre-Termes $(FONTDIR)
+	# This also generates Gyre-Termes/eot Gyre-Termes/otf
+	$(SPLITFONT) Gyre-Termes $(FONTDIR)
 
 Latin-Modern/HTML-CSS/fontdata.js:
-# This also generates Latin-Modern/eot Latin-Modern/otf
-	$(PYTHON) splitFont.py Latin-Modern $(FONTDIR)
+	# This also generates Latin-Modern/eot Latin-Modern/otf
+	$(SPLITFONT) Latin-Modern $(FONTDIR)
 
 Neo-Euler/HTML-CSS/fontdata.js:
-# This also generates Neo-Euler/eot Neo-Euler/otf
-	$(PYTHON) splitFont.py Neo-Euler $(FONTDIR)
+	# This also generates Neo-Euler/eot Neo-Euler/otf
+	$(SPLITFONT) Neo-Euler $(FONTDIR)
 
 STIX-Web/HTML-CSS/fontdata.js:
-# This also generates STIX-Web/eot STIX-Web/otf
-	$(PYTHON) splitFont.py STIX-Web $(FONTDIR)
+	# This also generates STIX-Web/eot STIX-Web/otf
+	$(SPLITFONT) STIX-Web $(FONTDIR)
 
 fontdata: Asana-Math/HTML-CSS/fontdata.js Gyre-Pagella/HTML-CSS/fontdata.js Gyre-Termes/HTML-CSS/fontdata.js Latin-Modern/HTML-CSS/fontdata.js Neo-Euler/HTML-CSS/fontdata.js STIX-Web/HTML-CSS/fontdata.js
 
@@ -133,3 +136,16 @@ copyFontFiles:
 		cp -r $$f/woff $(FONTDEST)/$$f/woff; \
 		cp -r $$f/*.txt $(FONTDEST)/$$f/; \
 	done
+
+.PHONY: all STIX-Web Asana-Math Gyre-Pagella Gyre-Termes Latin-Modern Neo-Euler \
+		Asana-Math Asana-Math/eot Asana-Math/woff \
+		clean \
+		copyFontData copyFontFiles \
+		eot Asana-Math/eot Gyre-Pagella/eot Gyre-Termes/eot Latin-Modern/eot Neo-Euler/eot STIX-Web/eot \
+		fontdata \
+		Gyre-Pagella/eot Gyre-Pagella/woff Gyre-Pagella \
+		Gyre-Termes/eot Gyre-Termes/woff Gyre-Termes \
+		Latin-Modern/eot Latin-Modern/woff Latin-Modern \
+		Neo-Euler/eot Neo-Euler/woff Neo-Euler \
+		STIX-Web/eot STIX-Web/woff STIX-Web \
+		woff Asana-Math/woff Gyre-Pagella/woff Gyre-Termes/woff Latin-Modern/woff Neo-Euler/woff STIX-Web/woff

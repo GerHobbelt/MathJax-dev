@@ -1,0 +1,7 @@
+    proofing:=0;
+    fontmaking:=1;
+    tracingtitles:=0;
+    pixels_per_inch:=1200;
+    blacker:=15;
+    fillin:=0;
+    o_correction:=1;

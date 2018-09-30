@@ -58,3 +58,6 @@ clean:
 	$(MAKE) -C Tables/STIX-1.1 clean
 	$(MAKE) -C Tables/TeX clean
 	$(MAKE) -C Tables/CMBright clean
+
+.PHONY: all otf afm svg img ams tables clean
+

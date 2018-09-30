@@ -31,14 +31,15 @@ afm:
 		echo "Generating $$output..."; \
 		$(FONTFORGE) -lang=ff -c \
 		'Open("'$$input'");Generate("afm/'$$output'")'; \
-		done
+	done
 
 fonts: afm
 	rm -rf fonts
 	@for file in `ls afm/*.afm | $(SED) 's|afm/\(.*\)\.afm|\1|'`; do \
 		echo "Breaking up $$file..."; \
 		$(PERL) break-up-font afm/$$file.afm; \
-		done
+	done
+
 data: fonts
 	mkdir -p data
 	rm -f data/*
@@ -51,3 +52,6 @@ install:
 
 clean:
 	rm -rf afm fonts data
+
+.PHONY: all afm fonts data install clean
+

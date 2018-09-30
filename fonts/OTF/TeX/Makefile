@@ -20,69 +20,72 @@
 include ../../../custom.cfg
 
 MFTRACE_MODIFIED=lib/mftrace-modified
+#MFTRACE_BIN=$(PYTHON) $(MFTRACE_MODIFIED)
+MFTRACE_BIN=$(MFTRACE)
 
 all: fonts install
 
 blacker: $(MFTRACE_MODIFIED)
+
 $(MFTRACE_MODIFIED):
 	$(PERL) makeBlacker 15 # values between 10 and 30 seem best
 
 pfa: $(MFTRACE_MODIFIED)
 	@echo "cmr10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmr10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmr10
 
 	@echo "cmmi10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/aae443f0.enc --simplify cmmi10
+	$(MFTRACE_BIN) --magnification 1000 --encoding $(TETEXENCODING)/aae443f0.enc --simplify cmmi10
 
 	@echo "cmsy10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/10037936.enc --simplify cmsy10
+	$(MFTRACE_BIN) --magnification 1000 --encoding $(TETEXENCODING)/10037936.enc --simplify cmsy10
 
 	@echo "cmex10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --keep cmex10
-	$(FONTFORGE) -lang=ff -c 'Open("mftrace.dir/cmex10.pfa.raw");SelectAll();AddExtrema();Simplify();AutoHint();Generate("cmex10.pfa");'
-	rm -rf mftrace.dir
-	rm cmex10.afm
+	$(MFTRACE_BIN) --magnification 1000 --keep cmex10
+	$(FONTFORGE) -lang=ff -script ff/cmex10_fix.ff 
+	# rm -rf mftrace.dir
+	# rm cmex10.afm
 
 	@echo "cmbx10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmbx10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmbx10
 
 	@echo "cmti10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmti10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmti10
 
 	@echo "msam10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify --encoding $(TETEXENCODING)/10037936.enc msam10
+	$(MFTRACE_BIN) --magnification 1000 --simplify --encoding $(TETEXENCODING)/10037936.enc msam10
 
 	@echo "msbm10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 450 --simplify --encoding $(TETEXENCODING)/10037936.enc msbm10
+	$(MFTRACE_BIN) --magnification 450 --simplify --encoding $(TETEXENCODING)/10037936.enc msbm10
 
 	@echo "cmmib10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/aae443f0.enc --simplify cmmib10
+	$(MFTRACE_BIN) --magnification 1000 --encoding $(TETEXENCODING)/aae443f0.enc --simplify cmmib10
 
 	@echo "cmbsy10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --encoding $(TETEXENCODING)/10037936.enc --simplify cmbsy10
+	$(MFTRACE_BIN) --magnification 1000 --encoding $(TETEXENCODING)/10037936.enc --simplify cmbsy10
 
 	@echo "cmtt10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmtt10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmtt10
 
 	@echo "cmss10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmss10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmss10
 	@echo "cmssi10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmssi10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmssi10
 	@echo "cmssbx10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify cmssbx10
+	$(MFTRACE_BIN) --magnification 1000 --simplify cmssbx10
 
 	@echo "eufm10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eufm10
+	$(MFTRACE_BIN) --magnification 1000 --simplify eufm10
 	@echo "eufb10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eufb10
+	$(MFTRACE_BIN) --magnification 1000 --simplify eufb10
 
-        #echo "eusm10"
-        #$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusm10
-        #echo "eusb10"
-        #$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify eusb10
+	# echo "eusm10"
+	# $(MFTRACE_BIN) --magnification 1000 --simplify eusm10
+	# echo "eusb10"
+	# $(MFTRACE_BIN) --magnification 1000 --simplify eusb10
 
 	@echo "rsfs10"
-	$(PYTHON) $(MFTRACE_MODIFIED) --magnification 1000 --simplify --encoding $(BASEENCODING)/tex256.enc rsfs10
+	$(MFTRACE_BIN) --magnification 1000 --simplify --encoding $(BASEENCODING)/tex256.enc rsfs10
 
 	mkdir -p pfa
 	rm -f pfa/*
@@ -90,14 +93,14 @@ pfa: $(MFTRACE_MODIFIED)
 
 ff: pfa
 	mkdir -p ff otf
-	rm -f ff/* otf/*
+	rm -f otf/*
 	$(PERL)	makeFF
 
 ttf: ff
 	mkdir -p ttf
 	rm -f ttf/*
 
-        # Handle the MathJax_Size4 font first as it used by other fonts.
+	# Handle the MathJax_Size4 font first as it is used by other fonts.
 	@echo "MathJax_Size4.ff"
 	$(FONTFORGE) -lang=ff -script ff/MathJax_Size4.ff
 
@@ -105,7 +108,7 @@ ttf: ff
 		echo ""; \
 		echo $$file; \
 		$(FONTFORGE) -lang=ff -script ff/$$file; \
-		done
+	done
 
 	@for file in `ls ttf/*.ttf`; do \
 		echo "hinting $$file"; \
@@ -115,9 +118,10 @@ ttf: ff
 			$(TTFAUTOHINT) --windows-compatibility $$file $$file.hinted; \
 		fi; \
 		mv $$file.hinted $$file; \
-		done
+	done
 
 	./fix_os2_metrics.rb ttf/
+
 eot: ttf
 	mkdir -p eot
 	rm -f eot/*
@@ -125,7 +129,7 @@ eot: ttf
 	@for file in `ls ttf/*.ttf | $(SED) 's|ttf/\(.*\)\.ttf|\1|'`; do \
 		echo "Generating $$file.eot..."; \
 		$(TTF2EOT) < ttf/$$file.ttf > eot/$$file.eot; \
-		done
+	done
 
 	rm -f eot/*WinChrome* eot/*Greek*
 
@@ -137,26 +141,26 @@ svg: ttf
 		echo "Generating $$file.svg..."; \
 		$(JAVA) -jar $(TTF2SVG) ttf/$$file.ttf \
 		-id $$file -o svg/$$file.svg -l 0 -h 65535; \
-		done
+	done
 
 	rm -f svg/*WinIE6* svg/*Greek*
 
 woff: otf ttf
-	@for file in `ls ttf/*.ttf | $(SED) 's|ttf/\(.*\)\.ttf|\1|'`; do \
+	@for file in `ls otf/*.otf | $(SED) 's|otf/\(.*\)\.otf|\1|'`; do \
 		echo "Generating $$file.woff..."; \
-		$(SFNT2WOFF) ttf/$$file.ttf; \
-		done
+		$(SFNT2WOFF) otf/$$file.otf; \
+	done
 
 	mkdir -p woff
 	rm -f woff/*
-	mv ttf/*.woff woff
+	mv otf/*.woff woff
 	rm -f woff/*WinChrom* woff/*WinIE6* woff/*Greek*
 
 woff2: woff
 	@for file in `ls ttf/*.ttf | $(SED) 's|ttf/\(.*\)\.ttf|\1|'`; do \
 		echo "Generating $$file.woff2..."; \
 		$(WOFF2) ttf/$$file.ttf; \
-		done
+	done
 
 	mkdir -p woff2
 	rm -f woff2/*
@@ -170,34 +174,44 @@ css: woff
 	@for file in `ls woff/*.woff | $(SED) 's|woff/\(.*\)\.woff|\1|'`; do \
 		echo "Generating $$file.css..."; \
 		$(PERL) woff2css $$file > css/$$file.css; \
-		end
+	end
 
 	$(PERL) css2all css/*.css > MathJax-All.css
 	mv MathJax-All.css css
 
 OTFandTTF: ttf
 
-fonts: OTFandTTF eot svg woff # css
+fonts: OTFandTTF eot svg woff css
 
 install:
-        #Copy the font files into the system font directory
-        #rm -f $FONTDIR/MathJax_*
+	#Copy the font files into the system font directory
+	#rm -f $FONTDIR/MathJax_*
 	cp `ls otf/*.otf | $(GREP) -v 'Greek'` $(FONTDIR)
-        # echo `ls ttf/*.ttf | $(GREP) -Ev 'WinChro|WinIE6'`
+	# echo `ls ttf/*.ttf | $(GREP) -Ev 'WinChro|WinIE6'`
 	cp ttf/*Greek*.ttf $(FONTDIR)
 
-        #  Put the fonts into the MathJax fonts folder
-	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/otf/*.*
-	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/eot/*.*
-	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/svg/*.*
-	rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/woff/*.*
-        #rm -f $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css/*.*
+	#  Put the fonts into the MathJax fonts folder
+	rm -rf $(MATHJAXDIR)/fonts/HTML-CSS/TeX/otf
+	rm -rf $(MATHJAXDIR)/fonts/HTML-CSS/TeX/eot
+	rm -rf $(MATHJAXDIR)/fonts/HTML-CSS/TeX/svg
+	rm -rf $(MATHJAXDIR)/fonts/HTML-CSS/TeX/woff
+	#rm -rf $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css
+	mkdir -p $(MATHJAXDIR)/fonts/HTML-CSS/TeX/otf
+	mkdir -p $(MATHJAXDIR)/fonts/HTML-CSS/TeX/eot
+	mkdir -p $(MATHJAXDIR)/fonts/HTML-CSS/TeX/svg
+	mkdir -p $(MATHJAXDIR)/fonts/HTML-CSS/TeX/woff
+	#mkdir -p $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css
+
 	cp `ls otf/*.otf | $(GREP) -v 'Greek'` $(MATHJAXDIR)/fonts/HTML-CSS/TeX/otf
 	cp eot/*.eot $(MATHJAXDIR)/fonts/HTML-CSS/TeX/eot
 	cp svg/*.svg $(MATHJAXDIR)/fonts/HTML-CSS/TeX/svg
 	cp woff/*.woff $(MATHJAXDIR)/fonts/HTML-CSS/TeX/woff
-        #cp css/*.css $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css
+	#cp css/*.css $(MATHJAXDIR)/fonts/HTML-CSS/TeX/css
 
 clean:
 	rm -f $(MFTRACE_MODIFIED) lib/blacker.mf
-	rm -rf pfa ff otf ttf eot svg woff css
+	rm -rf pfa otf ttf eot svg woff css
+	rm -rf mftrace.dir
+	rm -f ff/MathJax*.ff
+
+.PHONY: all fonts install blacker clean css woff woff2 eot ttf ff pfa OTFandTTF svg otf $(MFTRACE_MODIFIED)

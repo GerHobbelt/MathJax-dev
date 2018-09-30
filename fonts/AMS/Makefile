@@ -23,15 +23,20 @@ all: data optable translation
 
 data.js:
 	$(PERL) makeData
+
 data: data.js
 
 optable.js:
 	$(PERL) makeOpTable
+
 optable: optable.js
 
 AMS.pl:
 	$(PERL) makeTranslation > AMS.pl
+
 translation: AMS.pl
 
 clean:
 	rm -rf data.js optable.js AMS.pl
+
+.PHONY: all data optable translation clean

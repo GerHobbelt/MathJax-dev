@@ -38,3 +38,5 @@ STIX: unicode.pl
 
 clean:
 	rm -rf STIX unicode.pl $(STIXCHARLIST)
+
+.PHONY: all STIX clean

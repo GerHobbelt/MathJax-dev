@@ -52,3 +52,6 @@ install:
 
 clean:
 	rm -rf afm fonts data svg
+
+.PHONY: all afm fonts data install clean
+

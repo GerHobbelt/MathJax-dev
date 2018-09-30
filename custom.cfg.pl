@@ -26,22 +26,24 @@ $MATHJAXDIR='../../../../';
 # For TTF2EOT and SFNT2WOFF, see https://code.google.com/p/ttf2eot/ and
 # http://people.mozilla.org/~jkew/woff/ respectively.
 $FONTFORGE='fontforge';
-$MFTRACE='mftrace';
-$SFNT2WOFF='sfnt2woff';
-$TTF2EOT='ttf2eot';
-$TTF2SVG='/usr/share/java/batik-ttf2svg.jar';
+$MFTRACE='/c/W32TeX/bin/mftrace.exe';
+$SFNT2WOFF='/c/W32TeX/bin/sfnt2woff.exe';
+$TTF2EOT='/c/W32TeX/bin/ttf2eot';
+$TTF2SVG='/c/W32TeX/batik/batik-ttf2svg.jar';
 $TTX='ttx';
+$FFPYTHON='ffpython';
 
 #### Image compression tools ####
 $OPTIPNG='optipng';
 $ADVPNG='advpng';
 
 ##### TeXLive Encoding
-$TETEXENCODING='/usr/share/texmf-texlive/fonts/enc/dvips/tetex/';
-$BASEENCODING='/usr/share/texmf-texlive/fonts/enc/dvips/base/';
+$TETEXENCODING='/c/W32TeX/share/texmf-dist/fonts/enc/dvips/tetex/';
+$BASEENCODING='/c/W32TeX/share/texmf-dist/fonts/enc/dvips/base/';
 
 ##### packer #####
 $YUICOMPRESSOR='/usr/share/yui-compressor/yui-compressor.jar';
 
-$MFTRACE_PATH='';
+$MFTRACE_PATH='/c/W32TeX/bin/mftrace.py';
+
 1;

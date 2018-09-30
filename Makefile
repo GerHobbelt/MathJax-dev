@@ -36,6 +36,10 @@ help:
 	@echo "make combine"
 	@echo "  Run MathJax combiner, which combines the packed library source files"
 	@echo ""
+	@echo "make lint"
+	@echo "make fix"
+	@echo "  Run ESLint on all sources. Execute 'make fix' task have ESLint auto-fix issues in the code."
+	@echo ""
 	@echo "make prettier"
 	@echo "  Run MathJax prettifier, which pretty-prints the combined library files"
 	@echo ""
@@ -48,8 +52,8 @@ help:
 
 all: config pack combine prettier
 
-$(CUSTOM):
-	@cp default.cfg $(CUSTOM);
+$(CUSTOM): default.cfg
+	@echo "Copy default.cfg to $(CUSTOM)"
 	@echo "Configuration file '$(CUSTOM)' created.";
 	@echo "Edit this file and run 'make config'.";
 	@exit 1
@@ -58,7 +62,7 @@ $(CUSTOM).pl: $(CUSTOM)
 	@echo "Creating Perl config file..."
 	@cp $(CUSTOM) $(CUSTOM).pl
 	@echo >> $(CUSTOM).pl # ensure that the config file ends by a new line
-	@echo "MFTRACE_PATH=`$(WHICH) $(MFTRACE)`" >> $(CUSTOM).pl
+	#@echo "MFTRACE_PATH=`$(WHICH) $(MFTRACE)`" >> $(CUSTOM).pl
 	@$(SED) -i "s|^\([A-Z_0-9]*\)=\(.*\)|$$\1='\2';|" $(CUSTOM).pl
 	@echo "1;" >> $(CUSTOM).pl
 
@@ -73,8 +77,14 @@ pack: config
 combine: config
 	$(MAKE) -C combiner all
 
+lint:
+	cd $(MATHJAXDIR)/mathjax/ ; eslint unpacked/
+
+fix:
+	cd $(MATHJAXDIR)/mathjax/ ; eslint --fix unpacked/
+
 prettier:
-	prettier --write --print-width 120 $(MATHJAXDIR)/mathjax/MathJax.js $(MATHJAXDIR)/mathjax/config/*.js
+	node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs prettier --write --print-width 120 --loglevel log
 	
 misc: operator-dictionary MML-entities
 
@@ -92,5 +102,5 @@ clean-destination: config
 	# this assumes MATHJAXDIR is a *relative path* for the perl tools in combiner and packer:
 	-rm -rf $(MATHJAXDIR)/mathjax/config/ $(MATHJAXDIR)/mathjax/localization/ $(MATHJAXDIR)/mathjax/extensions/ $(MATHJAXDIR)/mathjax/jax/
 
-.PHONY: help fonts config pack combine clean clean-destination prettier misc operator-dictionary MML-entities all
+.PHONY: help lint fix fonts pack combine clean clean-destination prettier misc operator-dictionary MML-entities all
 
