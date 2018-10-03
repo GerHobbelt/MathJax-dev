@@ -43,6 +43,9 @@ help:
 	@echo "make prettier"
 	@echo "  Run MathJax prettifier, which pretty-prints the combined library files"
 	@echo ""
+	@echo "make previews"
+	@echo "  Render all MathJax demo pages in test/ to static HTML using usus+Chrome"
+	@echo ""
 	@echo "make all"
 	@echo "  Regenerate the MathJax library files (pack, combine & prettify)"
 	@echo ""
@@ -85,6 +88,9 @@ fix:
 
 prettier:
 	node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs prettier --write --print-width 120 --loglevel log
+
+previews:
+	cd MkPreviews; bash ./generate-previews.sh ../$(MATHJAXDIR)/mathjax
 	
 misc: operator-dictionary MML-entities
 
@@ -102,5 +108,5 @@ clean-destination: config
 	# this assumes MATHJAXDIR is a *relative path* for the perl tools in combiner and packer:
 	-rm -rf $(MATHJAXDIR)/mathjax/config/ $(MATHJAXDIR)/mathjax/localization/ $(MATHJAXDIR)/mathjax/extensions/ $(MATHJAXDIR)/mathjax/jax/
 
-.PHONY: help lint fix fonts pack combine clean clean-destination prettier misc operator-dictionary MML-entities all
+.PHONY: help lint fix fonts pack combine clean clean-destination prettier previews misc operator-dictionary MML-entities all
 
