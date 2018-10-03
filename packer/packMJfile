@@ -27,7 +27,8 @@ print "============================================\n";
 print "Compressing: $src\n";
 print "--------------------------------------------";
 # The sed command uncomments the 'MathJax.isPacked = true;' from MathJax.js
-system("cat '$src' | $SED \"s\/^.*\\/\\/ \\(MathJax.isPacked = true;\\).*$\/\\1\/\" > '$dst'");
+# The sed command removes the `/unpacked/` directory part from any MathJax load statement.
+system("cat '$src' | $SED -e \"s\/^.*\\/\\/ \\(MathJax.isPacked = true;\\).*$\/\\1\/\" -e \"s\/\\/unpacked\\/\/\\/\/\" > '$dst'");
 
 open(MJX,"<", $dst);
 @lines = <MJX>;
