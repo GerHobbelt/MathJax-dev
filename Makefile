@@ -59,6 +59,7 @@ $(CUSTOM): default.cfg
 	@echo "Copy default.cfg to $(CUSTOM)"
 	@echo "Configuration file '$(CUSTOM)' created.";
 	@echo "Edit this file and run 'make config'.";
+	touch $(CUSTOM)
 	@exit 1
 
 $(CUSTOM).pl: $(CUSTOM)
