@@ -43,6 +43,9 @@ help:
 	@echo "make prettier"
 	@echo "  Run MathJax prettifier, which pretty-prints the combined library files"
 	@echo ""
+	@echo "make prettier-dev"
+	@echo "  Run MathJax prettifier, which pretty-prints the library source files"
+	@echo ""
 	@echo "make previews"
 	@echo "  Render all MathJax demo pages in test/ to static HTML using usus+Chrome"
 	@echo ""
@@ -88,8 +91,19 @@ fix:
 	cd $(MATHJAXDIR)/mathjax/ ; eslint --fix unpacked/
 
 prettier:
-	node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs prettier --write --loglevel log
-	#node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs eslint --fix --debug
+	cd $(MATHJAXDIR)/mathjax/ ; prettier --write --loglevel log *.js
+	node globber/glob4prettier.js --fullpath $(MATHJAXDIR)/mathjax/ | xargs prettier --write --loglevel log
+	#node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs -t -P 1 -n 1 -r prettier/mk_prettier.sh $(MATHJAXDIR)/mathjax/ 
+	#node globber/glob4prettier.js --fullpath $(MATHJAXDIR)/mathjax/ | xargs eslint --fix
+	#node globber/glob4prettier.js --fullpath $(MATHJAXDIR)/mathjax/ | xargs prettier --write --loglevel log
+
+prettier-dev:
+	#node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ 
+	#pwd
+	#node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ | xargs prettier --write --loglevel log
+	#node globber/glob4prettier.js --devtree $(MATHJAXDIR)/mathjax/unpacked/ | xargs -t -P 1 -n 1 -r prettier/mk_prettier.sh $(MATHJAXDIR)/mathjax/unpacked/ 
+	node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ | xargs eslint --fix
+	node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ | xargs prettier --write --loglevel log
 
 previews:
 	cd MkPreviews; bash ./generate-previews.sh ../$(MATHJAXDIR)/mathjax
@@ -110,5 +124,5 @@ clean-destination: config
 	# this assumes MATHJAXDIR is a *relative path* for the perl tools in combiner and packer:
 	-rm -rf $(MATHJAXDIR)/mathjax/config/ $(MATHJAXDIR)/mathjax/localization/ $(MATHJAXDIR)/mathjax/extensions/ $(MATHJAXDIR)/mathjax/jax/
 
-.PHONY: help lint fix fonts pack combine clean clean-destination prettier previews misc operator-dictionary MML-entities all
+.PHONY: help lint fix fonts pack combine clean clean-destination prettier prettier-dev previews misc operator-dictionary MML-entities all
 
