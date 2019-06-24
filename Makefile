@@ -88,7 +88,8 @@ fix:
 	cd $(MATHJAXDIR)/mathjax/ ; eslint --fix unpacked/
 
 prettier:
-	node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs prettier --write --print-width 120 --loglevel log
+	node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs prettier --write --loglevel log
+	#node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs eslint --fix --debug
 
 previews:
 	cd MkPreviews; bash ./generate-previews.sh ../$(MATHJAXDIR)/mathjax

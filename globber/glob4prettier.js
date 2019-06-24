@@ -81,7 +81,8 @@ glob("**/*.js", options, function (er, files) {
 		}, null, 2));
 	} else {
 		console.log(files.map(function (el) {
-			return options.cwd + "/" + el;
+			//return options.cwd + "/" + el;
+			return "" + el;
 		}).join("\n"));
 	}
 });
