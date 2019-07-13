@@ -1,6 +1,6 @@
 {
   "name": "@gerhobbelt/mathjax-dev",
-  "version": "1.0.1-18",
+  "version": "1.0.1-19",
   "description": "development environment for MathJax",
   "repository": "git@github.com:GerHobbelt/MathJax-dev.git",
   "scripts": {
