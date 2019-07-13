@@ -91,19 +91,16 @@ fix:
 	cd $(MATHJAXDIR)/mathjax/ ; eslint --fix unpacked/
 
 prettier:
-	cd $(MATHJAXDIR)/mathjax/ ; prettier --write --loglevel log *.js
-	node globber/glob4prettier.js --fullpath $(MATHJAXDIR)/mathjax/ | xargs prettier --write --loglevel log
+	#cd $(MATHJAXDIR)/mathjax/ ; prettier --write --loglevel log *.js
 	#node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs -t -P 1 -n 1 -r prettier/mk_prettier.sh $(MATHJAXDIR)/mathjax/ 
+	node globber/glob4prettier.js --fullpath $(MATHJAXDIR)/mathjax/ | xargs prettier --write --loglevel log
+	# eslint 6.x has a few quirks we don't want in production output, hence next line disabled
 	#node globber/glob4prettier.js --fullpath $(MATHJAXDIR)/mathjax/ | xargs eslint --fix
-	#node globber/glob4prettier.js --fullpath $(MATHJAXDIR)/mathjax/ | xargs prettier --write --loglevel log
 
 prettier-dev:
-	#node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ 
-	#pwd
-	#node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ | xargs prettier --write --loglevel log
 	#node globber/glob4prettier.js --devtree $(MATHJAXDIR)/mathjax/unpacked/ | xargs -t -P 1 -n 1 -r prettier/mk_prettier.sh $(MATHJAXDIR)/mathjax/unpacked/ 
-	node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ | xargs eslint --fix
 	node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ | xargs prettier --write --loglevel log
+	node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ | xargs eslint --fix
 
 previews:
 	cd MkPreviews; bash ./generate-previews.sh ../$(MATHJAXDIR)/mathjax
