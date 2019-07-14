@@ -160,7 +160,7 @@ woff2: woff
 	@for file in `ls ttf/*.ttf | $(SED) 's|ttf/\(.*\)\.ttf|\1|'`; do \
 		echo "Generating $$file.woff2..."; \
 		$(WOFF2) ttf/$$file.ttf; \
-		done
+	done
 
 	mkdir -p woff2
 	rm -f woff2/*
