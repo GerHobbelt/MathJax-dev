@@ -43,6 +43,12 @@ help:
 	@echo "make prettier"
 	@echo "  Run MathJax prettifier, which pretty-prints the combined library files"
 	@echo ""
+	@echo "make prettier-dev"
+	@echo "  Run MathJax prettifier, which pretty-prints the library source files"
+	@echo ""
+	@echo "make previews"
+	@echo "  Render all MathJax demo pages in test/ to static HTML using usus+Chrome"
+	@echo ""
 	@echo "make all"
 	@echo "  Regenerate the MathJax library files (pack, combine & prettify)"
 	@echo ""
@@ -56,6 +62,7 @@ $(CUSTOM): default.cfg
 	@echo "Copy default.cfg to $(CUSTOM)"
 	@echo "Configuration file '$(CUSTOM)' created.";
 	@echo "Edit this file and run 'make config'.";
+	touch $(CUSTOM)
 	@exit 1
 
 $(CUSTOM).pl: $(CUSTOM)
@@ -84,7 +91,19 @@ fix:
 	cd $(MATHJAXDIR)/mathjax/ ; eslint --fix unpacked/
 
 prettier:
-	node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs prettier --write --print-width 120 --loglevel log
+	#cd $(MATHJAXDIR)/mathjax/ ; prettier --write --loglevel log *.js
+	#node globber/glob4prettier.js $(MATHJAXDIR)/mathjax/ | xargs -t -P 1 -n 1 -r prettier/mk_prettier.sh $(MATHJAXDIR)/mathjax/ 
+	node globber/glob4prettier.js --fullpath $(MATHJAXDIR)/mathjax/ | xargs prettier --write --loglevel log
+	# eslint 6.x has a few quirks we don't want in production output, hence next line disabled
+	#node globber/glob4prettier.js --fullpath $(MATHJAXDIR)/mathjax/ | xargs eslint --fix
+
+prettier-dev:
+	#node globber/glob4prettier.js --devtree $(MATHJAXDIR)/mathjax/unpacked/ | xargs -t -P 1 -n 1 -r prettier/mk_prettier.sh $(MATHJAXDIR)/mathjax/unpacked/ 
+	node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ | xargs prettier --write --loglevel log
+	node globber/glob4prettier.js --devtree --fullpath $(MATHJAXDIR)/mathjax/unpacked/ | xargs eslint --fix
+
+previews:
+	cd MkPreviews; bash ./generate-previews.sh ../$(MATHJAXDIR)/mathjax
 	
 misc: operator-dictionary MML-entities
 
@@ -102,5 +121,5 @@ clean-destination: config
 	# this assumes MATHJAXDIR is a *relative path* for the perl tools in combiner and packer:
 	-rm -rf $(MATHJAXDIR)/mathjax/config/ $(MATHJAXDIR)/mathjax/localization/ $(MATHJAXDIR)/mathjax/extensions/ $(MATHJAXDIR)/mathjax/jax/
 
-.PHONY: help lint fix fonts pack combine clean clean-destination prettier misc operator-dictionary MML-entities all
+.PHONY: help lint fix fonts pack combine clean clean-destination prettier prettier-dev previews misc operator-dictionary MML-entities all
 

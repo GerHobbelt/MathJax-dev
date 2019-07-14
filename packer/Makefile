@@ -32,4 +32,8 @@ misc-assets:
 	cp -f $(MATHJAXDIR)/unpacked/extensions/a11y/*.ogg $(MATHJAXDIR)/extensions/a11y/
 	cp -f $(MATHJAXDIR)/unpacked/jax/output/HTML-CSS/blank.gif $(MATHJAXDIR)/jax/output/HTML-CSS/
 
-.PHONY: all core imageFonts misc-assets
+# build target for the mathjax-third-party-extensions package:
+third-party-extensions:
+	bash ./pack-3rd-party-extensions.sh $(PERL)
+
+.PHONY: all core imageFonts misc-assets third-party-extensions
