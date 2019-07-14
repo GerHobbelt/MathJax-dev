@@ -24,6 +24,17 @@ sub packDir {
     if (-d "$src/$file") {
       next if "$src/$file" eq "$SRC/fonts";
       next if "$src/$file" eq "$SRC/docs";
+
+      next if "$src/$file" eq "$SRC/node_modules";
+
+      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/demo";
+      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/lib";
+      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/jax_js.js";
+      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/webpack.config.js";
+      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/tests";
+      next if "$src/$file" eq "$SRC/jax/output/EditableSVG/node_modules";
+      next if (("$src" eq "$SRC/jax/output/EditableSVG/ts") && ("$file" ne "autoload"));
+
       next if "$src/$file" eq "$SRC/unpacked";
       #next if "$src/$file" eq "$SRC/extensions/a11y";
       #next if "$src/$file" eq "$SRC/extensions/TeX/mhchem3";
@@ -41,7 +52,7 @@ sub packFile {
   my ($stime,$ssize) = (stat($src))[9,7];
   my $dtime = (stat($dst))[9];
   return if $stime <= $dtime && !$force;
-  system("$PACKMJFILE '$src' '$dst'");
+  if (system("$PACKMJFILE '$src' '$dst'") != 0) { die("Packer failed on file '$src'"); }
   my $dsize = (stat($dst))[7];
   print "Size: $dsize,  Original: $ssize [saved: ",$ssize-$dsize," or ",
     sprintf("%.1f",100*($ssize-$dsize)/$ssize),"%]\n";
