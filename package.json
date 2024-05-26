@@ -15,8 +15,8 @@
   "dependencies": {
     "usus": "1.6.0",
     "@gerhobbelt/nomnom": "1.8.4-28",
-    "eslint": "5.15.3",
-    "glob": "7.1.3",
+    "eslint": "9.0.0",
+    "glob": "9.0.0",
     "prettier": "1.16.4"
   }
 }
